@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chat Bác sĩ - Bệnh nhân</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+        body {
+            background: linear-gradient(135deg, #E0F7FA 0%, #FFFFFF 100%);
+            font-family: 'Be Vietnam Pro', sans-serif;
+            color: #000000;
+        }
+        .material-symbols-outlined {
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24
+        }
+        .organic-bubble-doctor {
+            border-radius: 1.5rem 1.5rem 0.5rem 1.5rem;}
+        .organic-bubble-patient {
+            border-radius: 1.5rem 1.5rem 1.5rem 0.5rem;}
+        .input-wave-container {
+            position: absolute;
+            inset: 0;
+            border-radius: 9999px;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .input-wave {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(144, 205, 244, 0.4);border-radius: 9999px;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+        }
+        .form-textarea:focus + .input-wave-container .input-wave,
+        .form-textarea:not(:placeholder-shown) + .input-wave-container .input-wave {
+            animation: wave 1.5s infinite ease-out;
+        }
+        @keyframes wave {
+            from {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 1;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0;
+            }
+        }
+    </style>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4f80f0",
+                        "text-primary": "#1f2937",
+                        "text-secondary": "#6b7280",
+                    },
+                    fontFamily: {
+                        "display": ["Be Vietnam Pro", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "2xl": "1.5rem",
+                        "3xl": "2rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'subtle': '0 4px 15px -2px rgba(0, 0, 0, 0.05)',
+                        'card': '0 10px 30px -5px rgba(173, 216, 230, 0.2), 0 4px 6px -2px rgba(173, 216, 230, 0.1)',
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-display text-black">
+<div class="relative flex min-h-screen w-full flex-row p-4 lg:p-6">
+<aside class="flex flex-col items-center gap-6 py-6 px-3">
+<div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-blue-600 shadow-md">
+<span class="material-symbols-outlined text-3xl"> medical_services </span>
+</div>
+<nav class="flex flex-col items-center gap-4">
+<button class="flex h-11 w-11 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100">
+<span class="material-symbols-outlined"> home </span>
+</button>
+<button class="flex h-11 w-11 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100">
+<span class="material-symbols-outlined"> person_search </span>
+</button>
+<button class="flex h-11 w-11 items-center justify-center rounded-full bg-blue-100 text-blue-600 transition-colors hover:bg-blue-200">
+<span class="material-symbols-outlined"> chat_bubble </span>
+</button>
+<button class="flex h-11 w-11 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100">
+<span class="material-symbols-outlined"> settings </span>
+</button>
+</nav>
+<div class="mt-auto">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12" data-alt="Doctor's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAX2lWhRSywN04RfEdq9Zcyml2PH5spXao_cbEq0tA3HrcojWd70VdRDfUwSbKjYJ9JcXal1v8cz_FCB7mdXCx4cfLK1qoYxGpfiW-8VJDwkrsDrMnWIZo_xqXdE5FF-zKbHsqESlOEN_gLPfBBqSE80b3wGm005g6IZCsy3bAuEpUNry3tYLYxhECZBfuAMn8Yo355jsAllqGjD9OHe7X8NQmcMULEdVCmILQxL7W8h74TWfQl2avbdHRLCeOuRYY4nakFCfm95FM");'></div>
+</div>
+</aside>
+<main class="relative flex flex-1 flex-col overflow-hidden rounded-3xl bg-white/60 backdrop-blur-xl border border-white/30 shadow-card">
+<header class="flex flex-shrink-0 items-center justify-between whitespace-nowrap border-b border-white/50 px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="relative">
+<img alt="Patient avatar" class="h-10 w-10 shrink-0 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSMuDU6aF4oeEVCy50CURmHViSFbFK3BaRNgraA_yuW0vDPZO2Gw1I7mD1-VDxT6kWv82wktwtOccpZ_vTcZniOZSsPO0VlOBBPMuvE3K8OLvi0-jW8NHfBMUwhsy0s-XnJT0fqkF1A_fHsJt7jTrymGPffPzfAa5t0HdScjsdsL3mWdakVDJwL_lHOh-4J3eHX5eVa5hJmmGasFOcKdO1HSM2aHErAVpx7vx2lUe3CCa9rA7euwqF3ty0FYjCtU-HTwc5E8Eox84"/>
+<span class="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-white"></span>
+</div>
+<h2 class="text-text-primary text-lg font-bold leading-tight text-black">Nguyễn Văn A</h2>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-white/50 text-text-secondary transition hover:bg-white">
+<span class="material-symbols-outlined text-xl"> call </span>
+</button>
+<button class="flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-white/50 text-text-secondary transition hover:bg-white">
+<span class="material-symbols-outlined text-xl"> more_horiz </span>
+</button>
+</div>
+</header>
+<div class="flex flex-1 flex-col gap-6 overflow-y-auto p-6">
+<div class="flex items-start justify-end gap-4">
+<div class="flex flex-1 flex-col items-end gap-2">
+<p class="text-right text-sm font-semibold leading-normal text-black">Bác sĩ</p>
+<div class="max-w-xl organic-bubble-doctor bg-gradient-to-br from-blue-400 to-blue-500 px-5 py-4 shadow-lg shadow-blue-500/20">
+<p class="text-sm font-normal leading-relaxed text-white">
+                            Chào anh, tôi đã xem qua các chỉ số gần đây. Anh cảm thấy trong người thế nào ạ?
+                        </p>
+</div>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 h-10 shrink-0" data-alt="Doctor's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAX2lWhRSywN04RfEdq9Zcyml2PH5spXao_cbEq0tA3HrcojWd70VdRDfUwSbKjYJ9JcXal1v8cz_FCB7mdXCx4cfLK1qoYxGpfiW-8VJDwkrsDrMnWIZo_xqXdE5FF-zKbHsqESlOEN_gLPfBBqSE80b3wGm005g6IZCsy3bAuEpUNry3tYLYxhECZBfuAMn8Yo355jsAllqGjD9OHe7X8NQmcMULEdVCmILQxL7W8h74TWfQl2avbdHRLCeOuRYY4nakFCfm95FM");'></div>
+</div>
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 shrink-0 rounded-full bg-cover bg-center" data-alt="Patient avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDSMuDU6aF4oeEVCy50CURmHViSFbFK3BaRNgraA_yuW0vDPZO2Gw1I7mD1-VDxT6kWv82wktwtOccpZ_vTcZniOZSsPO0VlOBBPMuvE3K8OLvi0-jW8NHfBMUwhsy0s-XnJT0fqkF1A_fHsJt7jTrymGPffPzfAa5t0HdScjsdsL3mWdakVDJwL_lHOh-4J3eHX5eVa5hJmmGasFOcKdO1HSM2aHErAVpx7vx2lUe3CCa9rA7euwqF3ty0FYjCtU-HTwc5E8Eox84");'></div>
+<div class="flex flex-1 flex-col items-start gap-2">
+<p class="text-sm font-semibold leading-normal text-black">Nguyễn Văn A</p>
+<div class="max-w-xl organic-bubble-patient bg-cyan-50 px-5 py-4 shadow-subtle">
+<p class="text-sm font-normal leading-relaxed text-gray-800">
+                            Chào bác sĩ, tôi thấy hơi mệt và thỉnh thoảng có chút choáng váng ạ.
+                        </p>
+</div>
+</div>
+</div>
+<div class="flex items-start justify-end gap-4">
+<div class="flex flex-1 flex-col items-end gap-2">
+<div class="max-w-xl organic-bubble-doctor bg-gradient-to-br from-blue-400 to-blue-500 px-5 py-4 shadow-lg shadow-blue-500/20">
+<p class="text-sm font-normal leading-relaxed text-white">
+                            Để tôi xem lại biểu đồ huyết áp. Anh nhớ uống thuốc đều đặn và nghỉ ngơi nhiều hơn nhé.
+                        </p>
+</div>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 h-10 shrink-0" data-alt="Doctor's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAX2lWhRSywN04RfEdq9Zcyml2PH5spXao_cbEq0tA3HrcojWd70VdRDfUwSbKjYJ9JcXal1v8cz_FCB7mdXCx4cfLK1qoYxGpfiW-8VJDwkrsDrMnWIZo_xqXdE5FF-zKbHsqESlOEN_gLPfBBqSE80b3wGm005g6IZCsy3bAuEpUNry3tYLYxhECZBfuAMn8Yo355jsAllqGjD9OHe7X8NQmcMULEdVCmILQxL7W8h74TWfQl2avbdHRLCeOuRYY4nakFCfm95FM");'></div>
+</div>
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 shrink-0 rounded-full bg-cover bg-center" data-alt="Patient avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDSMuDU6aF4oeEVCy50CURmHViSFbFK3BaRNgraA_yuW0vDPZO2Gw1I7mD1-VDxT6kWv82wktwtOccpZ_vTcZniOZSsPO0VlOBBPMuvE3K8OLvi0-jW8NHfBMUwhsy0s-XnJT0fqkF1A_fHsJt7jTrymGPffPzfAa5t0HdScjsdsL3mWdakVDJwL_lHOh-4J3eHX5eVa5hJmmGasFOcKdO1HSM2aHErAVpx7vx2lUe3CCa9rA7euwqF3ty0FYjCtU-HTwc5E8Eox84");'></div>
+<div class="flex flex-1 flex-col items-start gap-2">
+<div class="organic-bubble-patient bg-cyan-50 px-4 py-3 shadow-subtle">
+<div class="flex items-center justify-center gap-2">
+<span class="h-2 w-2 animate-pulse rounded-full bg-cyan-400" style="animation-delay: 0s;"></span>
+<span class="h-2 w-2 animate-pulse rounded-full bg-cyan-400" style="animation-delay: 0.2s;"></span>
+<span class="h-2 w-2 animate-pulse rounded-full bg-cyan-400" style="animation-delay: 0.4s;"></span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-auto flex flex-shrink-0 flex-col border-t border-white/50 px-6 py-4">
+<div class="relative">
+<textarea class="form-textarea w-full resize-none rounded-full border-none bg-white py-3 pl-6 pr-36 text-sm text-black shadow-subtle placeholder:text-gray-500 focus:ring-2 focus:ring-blue-300/50" placeholder="Nhập tin nhắn..." rows="1"></textarea>
+<div class="input-wave-container">
+<div class="input-wave"></div>
+</div>
+<div class="absolute inset-y-0 right-0 flex items-center pr-2 z-10">
+<button class="flex h-10 w-10 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100">
+<span class="material-symbols-outlined text-xl"> mic </span>
+</button>
+<button class="flex h-10 w-10 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100">
+<span class="material-symbols-outlined text-xl -rotate-45"> attach_file </span>
+</button>
+<button class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500 text-white transition-colors hover:bg-blue-600">
+<span class="material-symbols-outlined text-xl"> send </span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<aside class="hidden w-96 flex-shrink-0 flex-col gap-6 pl-6 xl:flex">
+<div class="flex flex-col gap-6 rounded-3xl bg-white/60 p-6 backdrop-blur-xl border border-white/30 shadow-card">
+<h3 class="font-bold text-lg text-black">Thông tin bệnh nhân</h3>
+<div class="flex items-center gap-4">
+<img alt="Patient photo" class="h-16 w-16 rounded-2xl object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSMuDU6aF4oeEVCy50CURmHViSFbFK3BaRNgraA_yuW0vDPZO2Gw1I7mD1-VDxT6kWv82wktwtOccpZ_vTcZniOZSsPO0VlOBBPMuvE3K8OLvi0-jW8NHfBMUwhsy0s-XnJT0fqkF1A_fHsJt7jTrymGPffPzfAa5t0HdScjsdsL3mWdakVDJwL_lHOh-4J3eHX5eVa5hJmmGasFOcKdO1HSM2aHErAVpx7vx2lUe3CCa9rA7euwqF3ty0FYjCtU-HTwc5E8Eox84"/>
+<div>
+<p class="font-semibold text-black text-lg">Nguyễn Văn A</p>
+<p class="text-sm text-gray-600">ID: 743091</p>
+</div>
+</div>
+<div class="text-sm text-gray-600 space-y-1">
+<p><strong class="font-medium text-black">Tuổi:</strong> 45</p>
+<p><strong class="font-medium text-black">Giới tính:</strong> Nam</p>
+<p><strong class="font-medium text-black">Chẩn đoán:</strong> Tăng huyết áp</p>
+</div>
+</div>
+<div class="flex flex-col gap-6 rounded-3xl bg-white/60 p-6 backdrop-blur-xl border border-white/30 shadow-card">
+<h3 class="font-bold text-lg text-black">Chỉ số sức khỏe</h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col items-center justify-center gap-2 rounded-2xl bg-white/80 p-4 text-center">
+<img alt="Heart rate icon" class="h-10 w-10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVp9dBxMqRmodhFcmE_dXI7wIKeenLlrc90PYrF0cwy_gblJTnvONDg-LQ6pEDfHPcXOSBpSHUt574eRmdcMdXoGUYovuKhm9X3LImrbvRDIPLnI38IGWPKu9cWsBwfbkZTrsUC31lzgcGyyYPPdx_CZdVztp8hOfDyGk0fw2WpyptcScYnmtONUyIUEL2DFzhVgYWfnAA0FU2T2jQORigWdKLv2JGFquEaep89lb_7PuJRQOkCy7GaUODWHGCshYRRlzNiEtrAco"/>
+<p class="text-sm font-medium text-gray-600">Nhịp tim</p>
+<p class="text-xl font-bold text-black">82 <span class="text-sm font-normal">bpm</span></p>
+</div>
+<div class="flex flex-col items-center justify-center gap-2 rounded-2xl bg-white/80 p-4 text-center">
+<img alt="Blood pressure icon" class="h-10 w-10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOSf4_X_kNsXd8kKo5dXqITevMaGjBvaqzU4PGt46n5w2LP5a5uTBv0DmD0L8561JAYJb99g5MfAnTUXDhv6dlNnWXOcBjUcbUlDoOx7g1L56NZoPZLwCE8npHOfp82N97CWmvMt1Ir_5EWs3ZHfDZjoyGhzef1QTCFJ67FrUiKElFCmpETLrsLlMSOPi0s17Ii-BU8_A86tiIH---w2zIXYHZMeFwhKOxhOy9UU8UgCN04tQ3tcHlEzQihc0ACqyaAyZXLH9sFrg"/>
+<p class="text-sm font-medium text-gray-600">Huyết áp</p>
+<p class="text-xl font-bold text-black">120/80</p>
+</div>
+<div class="flex flex-col items-center justify-center gap-2 rounded-2xl bg-white/80 p-4 text-center">
+<img alt="SpO2 icon" class="h-10 w-10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvlF8QHxFlEzdwnjb-S-YNhMpdVgpDqfbSWNDmgY-QR_SiVIgD0kRzjwwgNbIC82rIzqKaJNSaxGH15V0lTYleu1hA58QOdT-7DjH3UXQxqbQdmW4vIbNuU1IumiusxXX0QdH4wJW9L_vNUUSDvcOCpe-5WVWbVUuuUK_C1JaDjgC3aA_RezqiukY1ZGaS0zu7hqRItiYjSRPQ7d89fRDlEMeHSlrJogdgOa01lfEfn2dirxwsQd4ZpCmw4eY3z8GF5r_NhBXC0FA"/>
+<p class="text-sm font-medium text-gray-600">SpO2</p>
+<p class="text-xl font-bold text-black">98%</p>
+</div>
+<div class="flex flex-col items-center justify-center gap-2 rounded-2xl bg-white/80 p-4 text-center">
+<img alt="Temperature icon" class="h-10 w-10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6n1LVUIpF-IylYhXXtAXL0ve4vZgXxUHSMkD_WpaVCn22ecxVpptgcjIpfLbvpXDooDOPCPBOeVqtntKfXLvjCK8S_p5QYvd0l_yKf6ZMSu9yk2_KE9pyQe2uj7QOyf6fVJWAhbynhdEo26w9uI_XG6WBMYHTmzINIb8UOTofSLhJ2Y4-2Y-X5yAv_v5xbPhO1XdaIDDg0pLMFGGHoDPVmylX9rgOaJ6otXlyLQj16ksehoYa2nrklxOCoJweaZJMLvGGf_bLAXs"/>
+<p class="text-sm font-medium text-gray-600">Nhiệt độ</p>
+<p class="text-xl font-bold text-black">37.1°C</p>
+</div>
+</div>
+</div>
+</aside>
+</div>
+
+</body></html>

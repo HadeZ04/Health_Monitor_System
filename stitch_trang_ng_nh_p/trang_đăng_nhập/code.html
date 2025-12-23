@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Đăng nhập - Hệ thống Giám sát Bệnh nhân Thông minh</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#4F46E5",
+              "light-blue": "#E0E7FF",
+              "background-light": "#F9FAFB",
+              "text-main": "#1F2937",
+              "text-secondary": "#6B7280",
+            },
+            fontFamily: {
+              "display": ["Space Grotesk", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="font-display">
+<div class="relative flex min-h-screen w-full flex-col bg-background-light group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="flex flex-1 items-center justify-center p-4 lg:p-6">
+<div class="flex w-full max-w-7xl items-center">
+<div class="hidden lg:flex lg:w-1/2 items-center justify-center p-8">
+<div class="relative w-full max-w-md h-auto aspect-square">
+<div class="absolute inset-0 bg-light-blue rounded-full blur-3xl"></div>
+<img class="relative object-cover w-full h-full rounded-3xl shadow-2xl" data-alt="A doctor examining medical data on a futuristic transparent screen, representing advanced healthcare technology." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCa54F8pSLMQ7_7TOMJqKXmA3rTL387XdfycecIA7-zXK-rSsSuedL9DQIF2kRoRD0DmvWTXDcdo33Fx_gyqogrkq72zbLqKff8557CO8PrWzRXaj_pB4UsYjyWGgxwEEtzB1WZDvlELgEjtzGEVokM3KKbou32MWPHBOW36abTSVX_RIcy6ll0J-444CvUsR3G6Sud1XdIuNr_kJwZjZ-85chiJtsN7VSFYFsfWjeVa6YH1QVM6VGRkrx9ZcRvXounSawzu8YaSac"/>
+</div>
+</div>
+<div class="w-full lg:w-1/2 flex items-center justify-center p-4">
+<div class="flex flex-col max-w-md w-full gap-8 bg-white p-8 md:p-12 rounded-2xl shadow-lg">
+<div class="flex flex-col items-center text-center">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary text-4xl">monitor_heart</span>
+<p class="text-xl font-bold text-text-main">Hệ thống Giám sát Bệnh nhân</p>
+</div>
+<h1 class="text-text-main tracking-light text-[32px] font-bold leading-tight">Chào mừng trở lại</h1>
+<p class="text-text-secondary text-base font-normal leading-normal pt-1">Đăng nhập vào tài khoản của bạn để tiếp tục.</p>
+</div>
+<div class="flex flex-col gap-5">
+<div class="flex flex-col">
+<label class="flex flex-col w-full">
+<p class="text-text-main text-base font-medium leading-normal pb-2">Email hoặc Tên đăng nhập</p>
+<div class="relative flex items-center w-full">
+<span class="material-symbols-outlined absolute left-4 text-text-secondary">person</span>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-300 bg-slate-50 focus:border-primary h-14 placeholder:text-text-secondary pl-12 pr-4 text-base font-normal leading-normal" placeholder="Nhập email hoặc tên đăng nhập" value="admin@techxen.org"/>
+</div>
+</label>
+</div>
+<div class="flex flex-col">
+<label class="flex flex-col w-full">
+<p class="text-text-main text-base font-medium leading-normal pb-2">Mật khẩu</p>
+<div class="relative flex items-center w-full">
+<span class="material-symbols-outlined absolute left-4 text-text-secondary">lock</span>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-300 bg-slate-50 focus:border-primary h-14 placeholder:text-text-secondary pl-12 pr-12 text-base font-normal leading-normal" placeholder="Nhập mật khẩu của bạn" type="password" value="admin123"/>
+<button class="absolute right-0 h-full px-4 text-text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</label>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<input class="h-5 w-5 rounded border-slate-400 border-2 bg-transparent text-primary checked:bg-primary checked:border-primary checked:bg-[image:var(--checkbox-tick-svg)] focus:ring-0 focus:ring-offset-0 focus:border-primary focus:outline-none" id="remember-me" style="--checkbox-tick-svg: url('data:image/svg+xml,%3csvg viewBox=%270 0 16 16%27 fill=%27rgb(255,255,255)%27 xmlns=%27http://www.w3.org/2000/svg%27%3e%3cpath d=%27M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z%27/%3e%3c/svg%3e');" type="checkbox"/>
+<label class="text-text-secondary text-sm font-normal leading-normal select-none" for="remember-me">Ghi nhớ đăng nhập</label>
+</div>
+<a class="text-sm font-medium leading-normal text-primary hover:underline" href="#">Quên mật khẩu?</a>
+</div>
+<button class="flex items-center justify-center w-full bg-primary text-white font-bold h-14 rounded-lg text-base leading-normal hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors">
+                                 Đăng nhập
+                             </button>
+</div>
+<div class="text-center">
+<p class="text-sm text-text-secondary">© 2024 Smart Patient Monitoring. All Rights Reserved.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

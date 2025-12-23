@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cảnh Báo Khẩn Cấp - Hệ thống Giám sát Bệnh nhân</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#256af4",
+            "background-light": "#f5f6f8",
+            "background-dark": "#101622",
+            "alert-light-bg": "#EBF8FF", // Light Blue Background
+            "alert-light-border": "#BEE3F8", // Light Blue Border
+            "alert-accent": "#3182CE", // A clearer blue for accents
+            "alert-warning": "#DD6B20", // Orange for warning text
+            "text-primary": "#1A202C", // Dark text color
+            "text-secondary": "#4A5568", // Grayer text color
+          },
+          fontFamily: {
+            "display": ["Space Grotesk", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "2xl": "1rem", // Softer rounded corner
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings:
+        'FILL' 1,
+        'wght' 700,
+        'GRAD' 0,
+        'opsz' 48
+    }
+  </style>
+</head>
+<body class="font-display bg-background-light text-text-primary">
+<div class="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-gray-500/30 backdrop-blur-sm">
+<div class="absolute inset-0 z-0 h-full w-full bg-[url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&amp;w=2070&amp;auto=format&amp;fit=crop')] bg-cover bg-center opacity-10"></div>
+<div class="relative m-4 flex w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-alert-light-border bg-white shadow-2xl shadow-blue-500/10">
+<div class="flex flex-col items-center gap-4 bg-alert-light-bg p-6 text-center">
+<div class="flex h-16 w-16 items-center justify-center rounded-full bg-alert-warning text-white">
+<span class="material-symbols-outlined text-5xl">
+            warning
+          </span>
+</div>
+<h1 class="font-display text-3xl font-bold tracking-tight text-alert-accent">CẢNH BÁO KHẨN CẤP</h1>
+</div>
+<div class="flex flex-col p-6">
+<div class="grid grid-cols-[auto_1fr] gap-x-4">
+<div class="col-span-2 grid grid-cols-subgrid border-b border-b-gray-200 py-4">
+<p class="font-display text-sm font-normal leading-normal text-text-secondary">Bệnh nhân:</p>
+<p class="font-display text-base font-medium leading-normal text-text-primary">Nguyễn Văn An - ID: 73451</p>
+</div>
+<div class="col-span-2 grid grid-cols-subgrid border-b border-b-gray-200 py-4">
+<p class="font-display text-sm font-normal leading-normal text-text-secondary">Vị trí:</p>
+<p class="font-display text-base font-medium leading-normal text-text-primary">Phòng 302B, Khu A</p>
+</div>
+<div class="col-span-2 grid grid-cols-subgrid border-b border-b-gray-200 py-4">
+<p class="font-display text-sm font-normal leading-normal text-text-secondary">Sự cố:</p>
+<p class="font-display text-base font-medium leading-normal text-alert-warning">Nhịp tim vượt ngưỡng nguy hiểm</p>
+</div>
+<div class="col-span-2 grid grid-cols-subgrid border-b border-b-gray-200 py-4">
+<p class="font-display text-sm font-normal leading-normal text-text-secondary">Giá trị:</p>
+<p class="font-display text-base font-medium leading-normal text-text-primary">185 BPM</p>
+</div>
+<div class="col-span-2 grid grid-cols-subgrid pt-4">
+<p class="font-display text-sm font-normal leading-normal text-text-secondary">Thời gian:</p>
+<p class="font-display text-base font-medium leading-normal text-text-primary">10:42:15 - 28/10/2023</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-4 p-6 pt-2">
+<div class="flex justify-center">
+<button class="flex h-12 w-full min-w-[84px] max-w-sm cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-alert-accent px-5 text-base font-bold leading-normal tracking-wide text-white shadow-md shadow-blue-500/20 transition-all hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-500/30 focus:outline-none focus:ring-4 focus:ring-blue-300">
+<span class="truncate">Đã nhận biết</span>
+</button>
+</div>
+<p class="font-display cursor-pointer text-center text-sm font-normal leading-normal text-text-secondary underline transition-colors hover:text-alert-accent">Xem chi tiết bệnh nhân</p>
+</div>
+</div>
+</div>
+
+</body></html>

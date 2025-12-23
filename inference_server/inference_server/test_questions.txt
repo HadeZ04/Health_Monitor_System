@@ -1,0 +1,45 @@
+Bác sĩ ơi, bệnh tiểu đường là gì?
+
+Làm thế nào để điều trị bệnh tiểu đường?
+
+Triệu chứng và nguyên nhân của bệnh tiểu đường là gì?
+
+Bệnh cao huyết áp là gì và cách điều trị?
+
+Triệu chứng của bệnh tim mạch là gì?
+
+Thuốc điều trị tiểu đường loại nào hiệu quả?
+
+Bệnh tiểu đường type 2 có thể phòng ngừa không?
+
+Insulin là gì và cách sử dụng?
+
+Biến chứng của bệnh tiểu đường?
+
+Chế độ ăn cho người tiểu đường?
+---------------------------------------------------
+1. Tôi bị đau đầu, bác sĩ ơi.
+
+2. Cơn đau đó kéo dài 3 ngày rồi, có sao không?
+   → Kỳ vọng: Nhớ "đau đầu" từ câu 1, không hỏi lại "đau gì?"
+
+3. Có cách nào giảm đau không?
+   → Kỳ vọng: Nhớ cả "đau đầu" + "3 ngày", đưa ra lời khuyên
+
+4. Tôi cũng bị buồn nôn nữa.
+   → Kỳ vọng: Kết hợp triệu chứng mới với đau đầu
+
+5. Vậy tôi nên uống thuốc gì?
+   → Kỳ vọng: Nhớ tất cả context, đưa ra lời khuyên về thuốc
+
+/////////////////////////////////////////////
+1. Tôi bị đau ngực khi leo cầu thang.
+
+2. Cơn đau đó có kèm khó thở không?
+   → Kỳ vọng: Nhớ "đau ngực khi leo cầu thang"
+
+3. Có, tôi thấy khó thở khi leo cầu thang.
+   → Kỳ vọng: Nhớ cả đau ngực + khó thở, có thể cảnh báo về tim mạch
+
+4. Vậy tôi nên làm gì?
+   → Kỳ vọng: Đưa ra lời khuyên dựa trên tất cả context

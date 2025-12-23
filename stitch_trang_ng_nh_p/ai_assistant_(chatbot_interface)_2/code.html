@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Trợ lý AI cho bệnh nhân</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        .material-symbols-outlined {
+          font-variation-settings:
+            'FILL' 0,
+            'wght' 300,
+            'GRAD' 0,
+            'opsz' 24
+        }
+        .organic-bubble-1 {
+            border-radius: 2rem 2rem 2rem 0.5rem;
+        }
+        .organic-bubble-2 {
+            border-radius: 2rem 2rem 0.5rem 2rem;
+        }
+        .organic-bubble-loader {
+            border-radius: 2rem 2rem 2rem 0.5rem;
+        }
+        .wave-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        .wave-effect:focus-within::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200%;
+            padding-top: 200%;
+            border-radius: 50%;
+            background-color: rgba(125, 211, 252, 0.2);
+            transform: translate(-50%, -50%) scale(0);
+            animation: ripple 1s ease-out;
+        }
+        @keyframes ripple {
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0;
+            }
+        }
+    </style>
+<script>
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary-light": "#EFFBFF", // A very light, almost white blue
+                "primary": "#7DD3FC", // Light sky blue
+                "secondary": "#38BDF8", // A slightly deeper blue
+                "accent": "#F0F9FF", // Very light blue for cards/inputs
+                "text-primary": "#082F49", // Dark, desaturated blue text
+                "text-secondary": "#64748B",
+                "white": "#FFFFFF",
+                "pastel-blue": "#E0F2FE",
+                "pastel-green": "#D1FAE5",
+                "pastel-purple": "#E5E7FA",
+              },
+              fontFamily: {
+                "display": ["Be Vietnam Pro", "sans-serif"]
+              },
+              borderRadius: {
+                "DEFAULT": "1rem",
+                "lg": "1.25rem",
+                "xl": "1.5rem",
+                "2xl": "2rem",
+                "3xl": "2.5rem",
+                "full": "9999px"
+              },
+              boxShadow: {
+                 'soft': '0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.04)',
+                 'inner-soft': 'inset 0 2px 4px 0 rgba(0,0,0,0.03)',
+                 'subtle': '0 4px 12px 0 rgba(0, 0, 0, 0.05)',
+                 'pastel': '0 8px 16px rgba(125, 211, 252, 0.1), 0 4px 8px rgba(0, 0, 0, 0.03)',
+               }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-b from-sky-50 to-white font-display text-black">
+<div class="flex h-screen w-full">
+<main class="flex h-full w-full flex-col lg:w-2/3 xl:w-3/4">
+<header class="flex flex-shrink-0 items-center gap-4 border-b border-sky-100/70 bg-white/60 px-6 py-4 backdrop-blur-lg">
+<div class="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-white shadow-soft">
+<span class="material-symbols-outlined text-2xl">
+smart_toy
+</span>
+</div>
+<div>
+<h1 class="text-lg font-bold leading-tight tracking-tight text-text-primary">Trợ lý AI cho bệnh nhân</h1>
+<p class="text-sm text-text-secondary">Sẵn sàng lắng nghe và giải đáp</p>
+</div>
+</header>
+<div class="flex-1 space-y-8 overflow-y-auto p-6">
+<div class="flex items-end gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover h-10 w-10 shrink-0 rounded-full" data-alt="AI assistant robot avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA1d8W3nu0ddhvLLbCQC_RgRib__hxLNbcsZuFvXlZpD18waOb-CS7TfM6A07byZbOyk7H-0HGQ53nnjtA2-FlktAn6EBciuJS8CSI0CWpGpAEiDZx2kJ44hWb2P40kuMqQPk_WMNryNFbGZBJq2vhyV9xqtHY9a6qgBF6cOizwmjjl__EkmiKPGBB7CbU7j9y5tf5X2FFiIAuFHOoOVStwhThTyUtMWHBcCEFPed4L3Qws7EWyhTUoGTuxZjDBNA92DbMmDYMnyes");'></div>
+<div class="relative max-w-xl">
+<div class="organic-bubble-1 bg-pastel-blue p-4 shadow-pastel">
+<p class="text-base font-normal leading-relaxed text-slate-800">Xin chào, tôi là trợ lý sức khỏe AI của bạn. Tôi có thể giúp gì cho bạn hôm nay? Bạn có thể hỏi về tình trạng sức khỏe, thông tin thuốc hoặc các triệu chứng bạn đang gặp phải.</p>
+</div>
+</div>
+</div>
+<div class="flex items-end justify-end gap-3">
+<div class="flex max-w-xl flex-col items-end">
+<div class="organic-bubble-2 bg-gradient-to-br from-sky-300 to-sky-500 p-4 text-white shadow-pastel">
+<p class="text-base font-normal leading-relaxed">Tôi cảm thấy hơi mệt mỏi và đau đầu, tôi nên làm gì?</p>
+</div>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover h-10 w-10 shrink-0 rounded-full" data-alt="User's profile picture with a generic icon" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAX2lWhRSywN04RfEdq9Zcyml2PH5spXao_cbEq0tA3HrcojWd70VdRDfUwSbKjYJ9JcXal1v8cz_FCB7mdXCx4cfLK1qoYxGpfiW-8VJDwkrsDrMnWIZo_xqXdE5FF-zKbHsqESlOEN_gLPfBBqSE80b3wGm005g6IZCsy3bAuEpUNry3tYLYxhECZBfuAMn8Yo355jsAllqGjD9OHe7X8NQmcMULEdVCmILQxL7W8h74TWfQl2avbdHRLCeOuRYY4nakFCfm95FM");'></div>
+</div>
+<div class="flex items-end gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover h-10 w-10 shrink-0 rounded-full" data-alt="AI assistant robot avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA9gDjn6NRpE32MAjR8WoZt64BuOySpjNMUgJ3l13vUxzxCYOttohnub6_3RlC4WkWxR4fY8gHqPGgHXNzT2FIBgMnCwVaBgLaYtw3Ha2jjdAOwnIR57GeoK4ZPvbn95o8D1Mf7XG52qp-ztrbPSgTBPng2p8WSWf3Oy5v3y4G-SW1k3K7qXn50U4gbvT8y0anL3oSDmwiMM-LtIBbXoYWB5GYlS8wIReYvPI7d2DCtn-VDcNVHy65DrpVCpqnMdnrkjZweB1INIMw");'></div>
+<div class="organic-bubble-loader w-20 bg-pastel-blue px-4 py-3 shadow-pastel">
+<div class="flex items-center justify-center gap-2">
+<span class="h-2 w-2 animate-pulse rounded-full bg-secondary/80" style="animation-delay: 0s;"></span>
+<span class="h-2 w-2 animate-pulse rounded-full bg-secondary/80" style="animation-delay: 0.2s;"></span>
+<span class="h-2 w-2 animate-pulse rounded-full bg-secondary/80" style="animation-delay: 0.4s;"></span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-shrink-0 bg-white/50 p-4 backdrop-blur-lg sm:p-6">
+<div class="relative wave-effect">
+<textarea class="form-textarea w-full resize-none rounded-full border-none bg-accent py-3.5 pl-6 pr-40 text-base text-slate-900 shadow-inner-soft placeholder:text-text-secondary focus:ring-2 focus:ring-primary/50" placeholder="Nhập câu hỏi của bạn..." rows="1"></textarea>
+<div class="absolute bottom-1/2 right-2.5 flex translate-y-1/2 items-center gap-1.5">
+<button class="flex h-10 w-10 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-sky-100 hover:text-secondary">
+<span class="material-symbols-outlined"> mic </span>
+</button>
+<button class="flex h-10 w-10 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-sky-100 hover:text-secondary">
+<span class="material-symbols-outlined"> attach_file </span>
+</button>
+<button class="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-white shadow-md transition-transform hover:scale-105">
+<span class="material-symbols-outlined"> send </span>
+</button>
+</div>
+</div>
+<p class="mt-2 text-center text-xs text-text-secondary">Thông tin từ AI chỉ mang tính tham khảo và không thay thế chẩn đoán của bác sĩ.</p>
+</div>
+</main>
+<aside class="hidden h-full flex-col border-l border-sky-100/70 bg-white/50 p-6 backdrop-blur-lg lg:flex lg:w-1/3 xl:w-1/4">
+<h2 class="text-xl font-bold text-text-primary">Thông tin sức khỏe</h2>
+<div class="mt-4 flex-1 space-y-6 overflow-y-auto pr-2">
+<div class="rounded-3xl bg-white/70 p-5 shadow-pastel">
+<h3 class="flex items-center gap-3 text-base font-semibold text-text-primary">
+<div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-pastel-blue">
+<span class="material-symbols-outlined text-sky-700"> monitoring </span>
+</div>
+<span>Chỉ số hôm nay</span>
+</h3>
+<div class="mt-4 grid grid-cols-2 gap-4 pt-4 text-sm">
+<div class="flex flex-col items-center gap-2 rounded-xl bg-sky-50 p-3 shadow-inner-soft">
+<span class="material-symbols-outlined text-red-500">favorite</span>
+<span class="font-bold text-text-primary">85 bpm</span>
+<span class="text-xs text-text-secondary">Nhịp tim</span>
+</div>
+<div class="flex flex-col items-center gap-2 rounded-xl bg-sky-50 p-3 shadow-inner-soft">
+<span class="material-symbols-outlined text-blue-500">blood_pressure</span>
+<span class="font-bold text-text-primary">120/80</span>
+<span class="text-xs text-text-secondary">Huyết áp</span>
+</div>
+<div class="flex flex-col items-center gap-2 rounded-xl bg-sky-50 p-3 shadow-inner-soft">
+<span class="material-symbols-outlined text-green-500">thermostat</span>
+<span class="font-bold text-text-primary">37.0°C</span>
+<span class="text-xs text-text-secondary">Nhiệt độ</span>
+</div>
+<div class="flex flex-col items-center gap-2 rounded-xl bg-sky-50 p-3 shadow-inner-soft">
+<span class="material-symbols-outlined text-cyan-500">air</span>
+<span class="font-bold text-text-primary">98%</span>
+<span class="text-xs text-text-secondary">SpO2</span>
+</div>
+</div>
+</div>
+<div class="rounded-3xl bg-white/70 p-5 shadow-pastel">
+<h3 class="flex items-center gap-3 text-base font-semibold text-text-primary">
+<div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-pastel-green">
+<span class="material-symbols-outlined text-green-700"> lightbulb </span>
+</div>
+<span>Gợi ý cho bạn</span>
+</h3>
+<ul class="mt-4 space-y-3 pt-4 text-sm">
+<li>
+<button class="w-full rounded-xl bg-sky-50/70 p-3 text-left text-sky-800 shadow-inner-soft transition-colors hover:bg-sky-100">Làm thế nào để giảm đau đầu?</button>
+</li>
+<li>
+<button class="w-full rounded-xl bg-sky-50/70 p-3 text-left text-sky-800 shadow-inner-soft transition-colors hover:bg-sky-100">Các bài tập thể dục nhẹ nhàng?</button>
+</li>
+<li>
+<button class="w-full rounded-xl bg-sky-50/70 p-3 text-left text-sky-800 shadow-inner-soft transition-colors hover:bg-sky-100">Thực phẩm nào tốt cho người mệt mỏi?</button>
+</li>
+</ul>
+</div>
+<div class="relative overflow-hidden rounded-3xl bg-white/70 p-5 shadow-pastel">
+<div class="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-pastel-purple/50"></div>
+<div class="absolute -bottom-12 -left-4 h-32 w-32 rounded-full bg-pastel-blue/50"></div>
+<div class="relative z-10">
+<h3 class="flex items-center gap-3 text-base font-semibold text-text-primary">
+<div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-pastel-purple">
+<span class="material-symbols-outlined text-indigo-700"> calendar_month </span>
+</div>
+<span>Nhắc nhở lịch hẹn</span>
+</h3>
+<p class="mt-4 rounded-xl bg-purple-50 p-4 text-sm text-slate-700 shadow-inner-soft">
+        Bạn có lịch tái khám với <strong class="font-medium text-indigo-800">Bác sĩ Trần Anh Tuấn</strong> vào lúc <strong class="font-medium text-indigo-800">9:00, ngày mai</strong>.
+        </p>
+</div>
+</div>
+</div>
+</aside>
+</div>
+
+</body></html>

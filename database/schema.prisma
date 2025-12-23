@@ -1,0 +1,222 @@
+﻿generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String           @id @default(uuid())
+  email          String           @unique
+  password       String
+  role           Role?            @relation(fields: [roleId], references: [id])
+  roleId         String?
+  devices        Device[]
+  signals        Signal[]
+  alerts         Alert[]
+  chats          ChatHistory[]
+  patientProfile PatientProfile?
+  doctorPatients DoctorPatient[]  @relation("DoctorRelationships")
+  patientMappings DoctorPatient[] @relation("PatientRelationships")
+  patientChats   ChatMessage[]    @relation("PatientChat")
+  doctorChats    ChatMessage[]    @relation("DoctorChat")
+  reports        Report[]
+  createdAt      DateTime         @default(now())
+}
+
+model Role {
+  id    String @id @default(uuid())
+  name  String @unique
+  users User[]
+}
+
+model Device {
+  id        String   @id @default(uuid())
+  name      String
+  status    String
+  battery   Int?
+  owner     User?    @relation(fields: [ownerId], references: [id])
+  ownerId   String?
+  signals   Signal[]
+  createdAt DateTime @default(now())
+}
+
+model Signal {
+  id        String   @id @default(uuid())
+  type      String
+  value     Json?
+  recordedAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  device    Device?  @relation(fields: [deviceId], references: [id])
+  deviceId  String?
+}
+
+model Ecg {
+  id        String   @id @default(uuid())
+  signalId  String?
+  waveform  Json?
+  createdAt DateTime @default(now())
+}
+
+model Spo2 {
+  id        String   @id @default(uuid())
+  signalId  String?
+  percentage Float?
+  createdAt DateTime @default(now())
+}
+
+model Heartrate {
+  id        String   @id @default(uuid())
+  signalId  String?
+  bpm       Int?
+  createdAt DateTime @default(now())
+}
+
+model Ppg {
+  id        String   @id @default(uuid())
+  signalId  String?
+  waveform  Json?
+  createdAt DateTime @default(now())
+}
+
+model Pcg {
+  id        String   @id @default(uuid())
+  signalId  String?
+  waveform  Json?
+  createdAt DateTime @default(now())
+}
+
+model Gps {
+  id        String   @id @default(uuid())
+  signalId  String?
+  path      Json?
+  createdAt DateTime @default(now())
+}
+
+model Alert {
+  id        String   @id @default(uuid())
+  type      String
+  message   String
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  createdAt DateTime @default(now())
+}
+
+model ChatHistory {
+  id        String   @id @default(uuid())
+  prompt    String
+  response  String?
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  createdAt DateTime @default(now())
+}
+
+model PatientProfile {
+  id             String         @id @default(uuid())
+  user           User?          @relation(fields: [userId], references: [id])
+  userId         String?
+  age            Int?
+  gender         String?
+  medicalHistory String?
+  medications    Medication[]
+  files          MedicalFile[]
+  vitals         VitalTrend[]
+}
+
+model Medication {
+  id        String         @id @default(uuid())
+  name      String
+  dosage    String?
+  schedule  String?
+  status    String?
+  patient   PatientProfile? @relation(fields: [patientId], references: [id])
+  patientId String?
+}
+
+model MedicalFile {
+  id        String         @id @default(uuid())
+  name      String
+  type      String
+  url       String?
+  patient   PatientProfile? @relation(fields: [patientId], references: [id])
+  patientId String?
+  uploadedAt DateTime @default(now())
+}
+
+model VitalTrend {
+  id        String         @id @default(uuid())
+  type      String
+  values    Json?
+  patient   PatientProfile? @relation(fields: [patientId], references: [id])
+  patientId String?
+  recordedAt DateTime @default(now())
+}
+
+model AlertRule {
+  id        String   @id @default(uuid())
+  name      String
+  condition String
+  severity  String
+  alerts    AlertEvent[]
+}
+
+model AlertEvent {
+  id        String     @id @default(uuid())
+  rule      AlertRule? @relation(fields: [ruleId], references: [id])
+  ruleId    String?
+  status    String
+  payload   Json?
+  deliveries AlertDelivery[]
+  createdAt DateTime @default(now())
+}
+
+model AlertDelivery {
+  id        String      @id @default(uuid())
+  channel   String
+  status    String
+  event     AlertEvent? @relation(fields: [eventId], references: [id])
+  eventId   String?
+  deliveredAt DateTime?
+}
+
+model DeviceFirmware {
+  id        String  @id @default(uuid())
+  version   String
+  status    String
+  scheduled DateTime?
+  device    Device? @relation(fields: [deviceId], references: [id])
+  deviceId  String?
+}
+
+model Report {
+  id        String   @id @default(uuid())
+  type      String
+  status    String
+  patient   User?    @relation(fields: [patientId], references: [id])
+  patientId String?
+  generatedAt DateTime @default(now())
+  link      String?
+}
+
+model DoctorPatient {
+  id        String @id @default(uuid())
+  doctor    User?  @relation(\"DoctorRelationships\", fields: [doctorId], references: [id])
+  doctorId  String?
+  patient   User?  @relation(\"PatientRelationships\", fields: [patientId], references: [id])
+  patientId String?
+  createdAt DateTime @default(now())
+}
+
+model ChatMessage {
+  id         String   @id @default(uuid())
+  authorRole String
+  content    String
+  patient    User?    @relation(\"PatientChat\", fields: [patientId], references: [id])
+  patientId  String?
+  doctor     User?    @relation(\"DoctorChat\", fields: [doctorId], references: [id])
+  doctorId   String?
+  createdAt  DateTime @default(now())
+}
