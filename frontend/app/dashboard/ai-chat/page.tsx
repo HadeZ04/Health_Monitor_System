@@ -119,22 +119,25 @@ export default function AiChatPage() {
         success: boolean;
         reply: string;
         confidence?: number;
-        verdict?: string;
-        citations?: string[];
-        sources?: Array<{
-          title: string;
-          abstract: string;
-          pmid: string;
-          score: number;
-        }>;
-        warning?: string | null;
+        intent?: string;
+        action_taken?: string;
+        sources?: string[];
         session_id?: string;
-      }>("/chat/ask", {
+        data?: {
+          db_results?: Array<Record<string, any>>;
+          analysis?: string;
+        };
+        warning?: string | null;
+        metadata?: {
+          pii_removed?: boolean;
+          db_accessed?: boolean;
+          safety_level?: string;
+          safety_triggered?: boolean;
+        };
+      }>("/chatbot/ask", {
         method: "POST",
         body: JSON.stringify({
           question,
-          // Dùng chatSessionId để model nhớ hội thoại hiện tại,
-          // mỗi lần New Chat sẽ tạo session_id mới → xóa trí nhớ cũ.
           session_id: chatSessionId,
         }),
       });
@@ -142,16 +145,32 @@ export default function AiChatPage() {
       // Remove loading message and add response
       setMessages((prev) => {
         const filtered = prev.filter((msg) => msg.id !== loadingMessageId);
+        
+        // Format the response message
+        let displayContent = response.reply;
+        
+        // If there's database results, format them nicely
+        if (response.data?.db_results && response.data.db_results.length > 0) {
+          displayContent += "\n\n📊 **Kết quả từ hồ sơ của bạn:**\n";
+          response.data.db_results.forEach((item, idx) => {
+            displayContent += `\n${idx + 1}. ${JSON.stringify(item, null, 2)}`;
+          });
+        }
+        
+        // Add analysis if present
+        if (response.data?.analysis) {
+          displayContent += "\n\n💡 **Phân tích:**\n" + response.data.analysis;
+        }
+        
         return [
           ...filtered,
           {
             id: `assistant-${Date.now()}`,
             role: "assistant" as const,
-            content: response.reply,
+            content: displayContent,
             timestamp: new Date(),
-            citations: response.citations,
-            confidence: response.confidence,
             warning: response.warning,
+            confidence: response.confidence,
           },
         ];
       });

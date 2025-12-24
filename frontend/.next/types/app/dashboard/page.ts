@@ -1,4 +1,4 @@
-// File: D:\WEB\techxen.vercel.app_index2.html_varuap\frontend\app\dashboard\page.tsx
+// File: C:\Web\Health_Monitor_System\frontend\app\dashboard\page.tsx
 import * as entry from '../../../../app/dashboard/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

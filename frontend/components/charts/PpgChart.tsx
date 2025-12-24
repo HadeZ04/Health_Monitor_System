@@ -76,9 +76,16 @@ export function PpgChart({ live = true, data: externalData, height = 256 }: PpgC
             <Tooltip
               content={({ active, payload }) => {
                 if (active && payload && payload.length) {
+                  const rawValue = payload[0].value;
+                  const numericValue =
+                    typeof rawValue === "number" ? rawValue : Number(rawValue);
+                  const displayValue = Number.isFinite(numericValue)
+                    ? numericValue.toFixed(3)
+                    : "N/A";
+
                   return (
                     <div className="rounded-lg border bg-background p-2 shadow-lg">
-                      <p className="text-sm">Amplitude: {payload[0].value?.toFixed(3)}</p>
+                      <p className="text-sm">Amplitude: {displayValue}</p>
                     </div>
                   );
                 }

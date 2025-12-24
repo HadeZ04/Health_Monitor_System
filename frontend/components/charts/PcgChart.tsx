@@ -76,10 +76,24 @@ export function PcgChart({ live = true, data: externalData, height = 256 }: PcgC
             <Tooltip
               content={({ active, payload }) => {
                 if (active && payload && payload.length) {
+                  const rawAmplitude = payload[0].value;
+                  const amplitudeValue =
+                    typeof rawAmplitude === "number" ? rawAmplitude : Number(rawAmplitude);
+                  const displayAmplitude = Number.isFinite(amplitudeValue)
+                    ? amplitudeValue.toFixed(1)
+                    : "N/A";
+
+                  const rawFrequency = (payload[0].payload as any)?.frequency;
+                  const frequencyValue =
+                    typeof rawFrequency === "number" ? rawFrequency : Number(rawFrequency);
+                  const displayFrequency = Number.isFinite(frequencyValue)
+                    ? frequencyValue.toFixed(0)
+                    : "N/A";
+
                   return (
                     <div className="rounded-lg border bg-background p-3 shadow-lg">
-                      <p className="text-sm">Amplitude: {payload[0].value?.toFixed(1)} dB</p>
-                      <p className="text-sm text-muted-foreground">Freq: {payload[0].payload.frequency.toFixed(0)} Hz</p>
+                      <p className="text-sm">Amplitude: {displayAmplitude} dB</p>
+                      <p className="text-sm text-muted-foreground">Freq: {displayFrequency} Hz</p>
                     </div>
                   );
                 }

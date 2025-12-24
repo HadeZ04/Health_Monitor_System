@@ -64,16 +64,23 @@ export function EcgChart({ live = true, data: externalData, showGrid = false, he
           <YAxis domain={[-1.5, 2.5]} hide />
           <Tooltip
             cursor={{ stroke: "hsl(var(--primary))", strokeWidth: 1 }}
-            content={({ active, payload }) => {
-              if (active && payload && payload.length) {
-                return (
-                  <div className="rounded-lg border bg-background p-2 shadow-lg">
-                    <p className="text-sm">Value: {payload[0].value?.toFixed(3)} mV</p>
-                  </div>
-                );
-              }
-              return null;
-            }}
+             content={({ active, payload }) => {
+               if (active && payload && payload.length) {
+                 const rawValue = payload[0].value;
+                 const numericValue =
+                   typeof rawValue === "number" ? rawValue : Number(rawValue);
+                 const displayValue = Number.isFinite(numericValue)
+                   ? numericValue.toFixed(3)
+                   : "N/A";
+
+                 return (
+                   <div className="rounded-lg border bg-background p-2 shadow-lg">
+                    <p className="text-sm">Value: {displayValue} mV</p>
+                   </div>
+                 );
+               }
+               return null;
+             }}
           />
           <Line type="monotone" dataKey="value" stroke="hsl(var(--primary))" dot={false} strokeWidth={2} isAnimationActive={false} />
         </LineChart>

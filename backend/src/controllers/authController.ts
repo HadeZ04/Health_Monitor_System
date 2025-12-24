@@ -1,71 +1,186 @@
-﻿import type { Request, Response } from "express";
-import {
-  createUser,
-  validateCredentials,
-  UserRole
-} from "../services/authService";
+﻿/**
+ * Authentication Controller
+ * Handles HTTP requests for authentication endpoints
+ */
 
-const allowedRoles: UserRole[] = ["patient", "doctor", "admin", "researcher"];
+import { Response } from 'express';
+import { AuthRequest } from '../middlewares/authMiddleware.js';
+import { authService } from '../services/authService.js';
+import { sendSuccess, sendCreated } from '../utils/response.js';
+import { asyncHandler } from '../utils/asyncHandler.js';
+import type {
+  RegisterDto,
+  LoginDto,
+  RefreshTokenDto,
+  ForgotPasswordDto,
+  ResetPasswordDto,
+  ChangePasswordDto,
+  UpdateProfileDto,
+} from '../validators/auth.validator.js';
 
-const normalizeRole = (role?: string): UserRole => {
-  if (!role) return "patient";
-  return allowedRoles.includes(role as UserRole) ? (role as UserRole) : "patient";
-};
+export class AuthController {
+  /**
+   * POST /api/auth/register
+   * Register new user
+   */
+  register = asyncHandler(async (req: AuthRequest, res: Response) => {
+    const data: RegisterDto = req.body;
+    
+    const result = await authService.register(data);
+    
+    return sendCreated(
+      res,
+      result,
+      'User registered successfully'
+    );
+  });
 
-const parseAge = (value?: unknown) => {
-  if (value === undefined || value === null || value === "") {
-    return undefined;
-  }
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : undefined;
-};
+  /**
+   * POST /api/auth/login
+   * Login user
+   */
+  login = asyncHandler(async (req: AuthRequest, res: Response) => {
+    const data: LoginDto = req.body;
+    
+    const result = await authService.login(data);
+    
+    return sendSuccess(
+      res,
+      result,
+      'Login successful'
+    );
+  });
 
-export const register = async (req: Request, res: Response) => {
-  const { fullName, email, password, role, age, gender } = req.body ?? {};
+  /**
+   * POST /api/auth/refresh
+   * Refresh access token
+   */
+  refreshToken = asyncHandler(async (req: AuthRequest, res: Response) => {
+    const { refreshToken }: RefreshTokenDto = req.body;
+    
+    const result = await authService.refreshToken(refreshToken);
+    
+    return sendSuccess(
+      res,
+      result,
+      'Token refreshed successfully'
+    );
+  });
 
-  if (!fullName || !email || !password) {
-    return res
-      .status(400)
-      .json({ message: "Full name, email, and password are required." });
-  }
-
-  try {
-    const session = await createUser({
-      fullName,
-      email,
-      password,
-      role: normalizeRole(role),
-      age: parseAge(age),
-      gender
-    });
-
-    return res.status(201).json(session);
-  } catch (error) {
-    if (error instanceof Error && error.message === "USER_EXISTS") {
-      return res.status(409).json({ message: "Email is already registered." });
+  /**
+   * GET /api/auth/me
+   * Get current user profile
+   */
+  getMe = asyncHandler(async (req: AuthRequest, res: Response) => {
+    const userId = req.user?.id;
+    
+    if (!userId) {
+      throw new Error('User ID not found in request');
     }
-    console.error("register_error", error);
-    return res.status(500).json({ message: "Unable to create account." });
-  }
-};
+    
+    const user = await authService.getMe(userId);
+    
+    return sendSuccess(
+      res,
+      user,
+      'User profile retrieved successfully'
+    );
+  });
 
-export const login = async (req: Request, res: Response) => {
-  const { email, password } = req.body ?? {};
-  if (!email || !password) {
-    return res
-      .status(400)
-      .json({ message: "Email and password are required." });
-  }
-
-  try {
-    const session = await validateCredentials(email, password);
-    if (!session) {
-      return res.status(401).json({ message: "Invalid credentials." });
+  /**
+   * PUT /api/auth/profile
+   * Update user profile
+   */
+  updateProfile = asyncHandler(async (req: AuthRequest, res: Response) => {
+    const userId = req.user?.id;
+    const data: UpdateProfileDto = req.body;
+    
+    if (!userId) {
+      throw new Error('User ID not found in request');
     }
+    
+    const user = await authService.updateProfile(userId, data);
+    
+    return sendSuccess(
+      res,
+      user,
+      'Profile updated successfully'
+    );
+  });
 
-    return res.json(session);
-  } catch (error) {
-    console.error("login_error", error);
-    return res.status(500).json({ message: "Unable to sign in." });
-  }
-};
+  /**
+   * POST /api/auth/change-password
+   * Change user password
+   */
+  changePassword = asyncHandler(async (req: AuthRequest, res: Response) => {
+    const userId = req.user?.id;
+    const data: ChangePasswordDto = req.body;
+    
+    if (!userId) {
+      throw new Error('User ID not found in request');
+    }
+    
+    const result = await authService.changePassword(userId, data);
+    
+    return sendSuccess(
+      res,
+      result,
+      'Password changed successfully'
+    );
+  });
+
+  /**
+   * POST /api/auth/forgot-password
+   * Request password reset
+   */
+  forgotPassword = asyncHandler(async (req: AuthRequest, res: Response) => {
+    const data: ForgotPasswordDto = req.body;
+    
+    const result = await authService.forgotPassword(data);
+    
+    return sendSuccess(
+      res,
+      result,
+      'Password reset request processed'
+    );
+  });
+
+  /**
+   * POST /api/auth/reset-password
+   * Reset password with token
+   */
+  resetPassword = asyncHandler(async (req: AuthRequest, res: Response) => {
+    const data: ResetPasswordDto = req.body;
+    
+    const result = await authService.resetPassword(data);
+    
+    return sendSuccess(
+      res,
+      result,
+      'Password reset successfully'
+    );
+  });
+
+  /**
+   * POST /api/auth/logout
+   * Logout user
+   */
+  logout = asyncHandler(async (req: AuthRequest, res: Response) => {
+    const userId = req.user?.id;
+    
+    if (!userId) {
+      throw new Error('User ID not found in request');
+    }
+    
+    const result = await authService.logout(userId);
+    
+    return sendSuccess(
+      res,
+      result,
+      'Logged out successfully'
+    );
+  });
+}
+
+// Export singleton instance
+export const authController = new AuthController();

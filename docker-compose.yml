@@ -14,12 +14,15 @@ services:
 
   backend:
     build:
-      context: ./backend
+      context: .
+      dockerfile: backend/Dockerfile
     command: npm run dev
-    working_dir: /app
+    working_dir: /app/backend
     env_file: ./.env.example
     volumes:
-      - ./backend:/app
+      - ./backend:/app/backend
+      - ./database:/app/database
+      - /app/backend/node_modules
     ports:
       - "4000:4000"
     depends_on:
@@ -33,6 +36,7 @@ services:
     env_file: ./.env.example
     volumes:
       - ./frontend:/app
+      - /app/node_modules
     ports:
       - "3000:3000"
     depends_on:

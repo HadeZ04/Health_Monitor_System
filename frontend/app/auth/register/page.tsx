@@ -29,14 +29,30 @@ export default function RegisterPage() {
     setError(null);
 
     try {
-      const session = await apiFetch<SessionState>("/auth/register", {
+      const data = await apiFetch<{
+        user: { id: string; email: string; name: string | null; role: { name: string } | null };
+        accessToken: string;
+        refreshToken: string;
+      }>("/auth/register", {
         method: "POST",
         body: JSON.stringify({
-          ...formData,
-          age: formData.age ? Number(formData.age) : undefined,
-          gender: formData.gender || undefined
+          email: formData.email,
+          password: formData.password,
+          name: formData.fullName,
+          role: formData.role,
         })
       });
+
+      const session: SessionState = {
+        token: data.accessToken,
+        user: {
+          id: data.user.id,
+          email: data.user.email,
+          fullName: data.user.name ?? data.user.email,
+          role: data.user.role?.name ?? "patient",
+        },
+      };
+
       saveSession(session);
       router.push("/dashboard");
     } catch (err) {
@@ -135,7 +151,7 @@ export default function RegisterPage() {
                     { value: 'patient', label: 'Patient', icon: '🧑‍⚕️' },
                     { value: 'doctor', label: 'Doctor', icon: '👨‍⚕️' },
                     { value: 'admin', label: 'Admin', icon: '👔' },
-                    { value: 'researcher', label: 'Researcher', icon: '🔬' }
+                    { value: 'staff', label: 'Staff', icon: '🧑‍💼' }
                   ].map(role => (
                     <button
                       key={role.value}

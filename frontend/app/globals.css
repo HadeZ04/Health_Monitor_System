@@ -2,71 +2,296 @@
 @tailwind components;
 @tailwind utilities;
 
+/**
+ * ============================================
+ * HEALTHCARE DESIGN SYSTEM - GLOBAL STYLES
+ * ============================================
+ */
+
+/**
+ * ========================================
+ * COLOR TOKENS - LIGHT MODE
+ * ========================================
+ */
 :root {
-  --background: 210 40% 98%; /* #F8FAFC Slate 50 */
-  --foreground: 222 47% 11%; /* #0F172A Slate 900 */
-  --card: 0 0% 100%; /* #FFFFFF */
+  /* Background Colors */
+  --background: 210 40% 98%;        /* #F8FAFC - Slate 50 */
+  --background-alt: 210 40% 96%;
+  --surface: 0 0% 100%;             /* Pure white for cards */
+  --surface-hover: 210 40% 97%;
+  
+  /* Foreground/Text Colors */
+  --foreground: 222 47% 11%;        /* #0F172A - Slate 900 */
+  --foreground-muted: 215 16% 47%;  /* #64748B - Slate 500 */
+  --foreground-subtle: 214 32% 91%;
+  
+  /* Primary Brand Colors (Sky Blue) */
+  --primary: 199 89% 48%;           /* #0EA5E9 - Sky 500 */
+  --primary-hover: 199 89% 42%;
+  --primary-active: 199 89% 38%;
+  --primary-foreground: 210 40% 98%;
+  --primary-light: 199 89% 96%;     /* #E0F2FE */
+  --primary-dark: 199 89% 28%;
+  
+  /* Secondary Colors (Teal) */
+  --secondary: 174 84% 38%;         /* #14B8A6 - Teal 500 */
+  --secondary-hover: 174 84% 32%;
+  --secondary-foreground: 0 0% 100%;
+  --secondary-light: 174 84% 94%;
+  --secondary-dark: 174 84% 25%;
+  
+  /* Accent Colors */
+  --accent: 217 91% 60%;            /* #3B82F6 - Blue 500 */
+  --accent-hover: 217 91% 54%;
+  --accent-foreground: 0 0% 100%;
+  
+  /* Status Colors */
+  --success: 142 71% 45%;           /* #22C55E - Green 500 */
+  --success-light: 142 71% 95%;
+  --success-foreground: 0 0% 100%;
+  
+  --warning: 38 92% 50%;            /* #FBBF24 - Yellow 400 */
+  --warning-light: 38 92% 95%;
+  --warning-foreground: 222 47% 11%;
+  
+  --error: 0 84% 60%;               /* #EF4444 - Red 500 */
+  --error-light: 0 84% 97%;
+  --error-foreground: 0 0% 100%;
+  
+  --info: 217 91% 60%;              /* #3B82F6 - Blue 500 */
+  --info-light: 217 91% 95%;
+  --info-foreground: 0 0% 100%;
+  
+  /* Destructive (legacy support) */
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  
+  /* UI Element Colors */
+  --border: 214 32% 91%;            /* #E2E8F0 - Slate 200 */
+  --border-hover: 215 25% 80%;
+  --border-focus: 199 89% 48%;
+  
+  --input: 214 32% 91%;
+  --input-hover: 215 25% 85%;
+  --input-focus: 199 89% 48%;
+  
+  --ring: 199 89% 48%;
+  --ring-offset: 0 0% 100%;
+  
+  /* Card & Panel */
+  --card: 0 0% 100%;
+  --card-hover: 210 40% 98%;
   --card-foreground: 222 47% 11%;
+  --card-border: 214 32% 91%;
+  
+  /* Muted/Disabled States */
+  --muted: 210 40% 96%;
+  --muted-hover: 210 40% 93%;
+  --muted-foreground: 215 16% 47%;
+  
+  --disabled: 214 32% 91%;
+  --disabled-foreground: 215 16% 65%;
+  
+  /* Popover, Dropdown */
   --popover: 0 0% 100%;
   --popover-foreground: 222 47% 11%;
-  --primary: 199 89% 48%; /* #0EA5E9 Sky 500 */
-  --primary-foreground: 210 40% 98%;
-  --secondary: 204 94% 94%; /* #E0F2FE Sky 100 */
-  --secondary-foreground: 222 47% 11%;
-  --muted: 210 40% 96.1%;
-  --muted-foreground: 215.4 16.3% 46.9%;
-  --accent: 199 89% 48%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
-  --ring: 199 89% 48%;
+  --popover-border: 214 32% 91%;
+  
+  --dropdown: 0 0% 100%;
+  --dropdown-hover: 210 40% 97%;
+  
+  /* Sidebar & Navigation */
+  --sidebar-bg: 222 47% 11%;
+  --sidebar-hover: 217 33% 17%;
+  --sidebar-active: 199 89% 48%;
+  --sidebar-foreground: 210 40% 98%;
+  --sidebar-border: 217 33% 17%;
+  
+  /* Header/TopNav */
+  --header-bg: 0 0% 100%;
+  --header-border: 214 32% 91%;
+  --header-foreground: 222 47% 11%;
+  
+  /* Medical/Healthcare Specific */
+  --vital-normal: 174 84% 38%;
+  --vital-elevated: 38 92% 50%;
+  --vital-critical: 0 84% 60%;
+  --vital-low: 217 91% 60%;
+  
+  /* Signal Colors */
+  --ecg-signal: 142 71% 45%;
+  --ppg-signal: 0 84% 60%;
+  --pcg-signal: 217 91% 60%;
+  --spo2-signal: 199 89% 48%;
+  
+  /* Border Radius */
   --radius: 0.75rem;
 }
 
+/**
+ * ========================================
+ * COLOR TOKENS - DARK MODE
+ * ========================================
+ */
 .dark {
-  --background: 222 47% 11%; /* Slate 900 */
+  /* Background Colors */
+  --background: 222 47% 11%;        /* #0F172A - Slate 900 */
+  --background-alt: 217 33% 17%;
+  --surface: 217 33% 17%;
+  --surface-hover: 215 25% 27%;
+  
+  /* Foreground/Text Colors */
   --foreground: 210 40% 98%;
-  --card: 217 33% 17%; /* Slate 800 */
-  --card-foreground: 210 40% 98%;
-  --popover: 222 47% 11%;
-  --popover-foreground: 210 40% 98%;
-  --primary: 199 89% 48%; /* Sky 500 */
-  --primary-foreground: 210 40% 98%;
-  --secondary: 217 33% 17%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 217 33% 17%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --accent: 199 89% 48%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 62.8% 30.6%;
+  --foreground-muted: 215 16% 65%;
+  --foreground-subtle: 215 25% 27%;
+  
+  /* Primary Brand Colors */
+  --primary: 199 89% 48%;
+  --primary-hover: 199 89% 55%;
+  --primary-active: 199 89% 60%;
+  --primary-foreground: 222 47% 11%;
+  --primary-light: 199 89% 20%;
+  --primary-dark: 199 89% 65%;
+  
+  /* Secondary Colors */
+  --secondary: 174 84% 38%;
+  --secondary-hover: 174 84% 45%;
+  --secondary-foreground: 222 47% 11%;
+  --secondary-light: 174 84% 20%;
+  --secondary-dark: 174 84% 50%;
+  
+  /* Accent */
+  --accent: 217 91% 60%;
+  --accent-hover: 217 91% 67%;
+  --accent-foreground: 222 47% 11%;
+  
+  /* Status Colors */
+  --success: 142 71% 45%;
+  --success-light: 142 71% 20%;
+  --success-foreground: 222 47% 11%;
+  
+  --warning: 38 92% 50%;
+  --warning-light: 38 92% 20%;
+  --warning-foreground: 222 47% 11%;
+  
+  --error: 0 84% 60%;
+  --error-light: 0 84% 25%;
+  --error-foreground: 210 40% 98%;
+  
+  --info: 217 91% 60%;
+  --info-light: 217 91% 25%;
+  --info-foreground: 222 47% 11%;
+  
+  /* Destructive */
+  --destructive: 0 84% 60%;
   --destructive-foreground: 210 40% 98%;
+  
+  /* UI Elements */
   --border: 217 33% 17%;
+  --border-hover: 215 25% 27%;
+  --border-focus: 199 89% 48%;
+  
   --input: 217 33% 17%;
+  --input-hover: 215 25% 27%;
+  --input-focus: 199 89% 48%;
+  
   --ring: 199 89% 48%;
+  --ring-offset: 222 47% 11%;
+  
+  /* Card */
+  --card: 217 33% 17%;
+  --card-hover: 215 25% 27%;
+  --card-foreground: 210 40% 98%;
+  --card-border: 215 25% 27%;
+  
+  /* Muted */
+  --muted: 217 33% 17%;
+  --muted-hover: 215 25% 27%;
+  --muted-foreground: 215 16% 65%;
+  
+  --disabled: 217 33% 17%;
+  --disabled-foreground: 215 16% 47%;
+  
+  /* Popover */
+  --popover: 217 33% 17%;
+  --popover-foreground: 210 40% 98%;
+  --popover-border: 215 25% 27%;
+  
+  --dropdown: 217 33% 17%;
+  --dropdown-hover: 215 25% 27%;
+  
+  /* Sidebar */
+  --sidebar-bg: 222 47% 11%;
+  --sidebar-hover: 217 33% 17%;
+  --sidebar-active: 199 89% 48%;
+  --sidebar-foreground: 210 40% 98%;
+  --sidebar-border: 217 33% 17%;
+  
+  /* Header */
+  --header-bg: 217 33% 17%;
+  --header-border: 215 25% 27%;
+  --header-foreground: 210 40% 98%;
+  
+  /* Medical (consistent across themes) */
+  --vital-normal: 174 84% 38%;
+  --vital-elevated: 38 92% 50%;
+  --vital-critical: 0 84% 60%;
+  --vital-low: 217 91% 60%;
+  
+  --ecg-signal: 142 71% 45%;
+  --ppg-signal: 0 84% 60%;
+  --pcg-signal: 217 91% 60%;
+  --spo2-signal: 199 89% 48%;
 }
 
+/**
+ * ========================================
+ * BASE STYLES
+ * ========================================
+ */
 * {
   border-color: hsl(var(--border));
 }
 
 body {
   min-height: 100vh;
-  font-family: var(--font-sans), "Inter", sans-serif;
+  font-family: var(--font-sans), "Inter", "Roboto", "Open Sans", sans-serif;
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
   background-image: 
     radial-gradient(circle at 10% 10%, rgba(14, 165, 233, 0.05), transparent 40%),
     radial-gradient(circle at 90% 90%, rgba(56, 189, 248, 0.05), transparent 40%);
+  transition: background-color 200ms ease-in-out, color 200ms ease-in-out;
 }
 
+/**
+ * ========================================
+ * UTILITY PATTERNS
+ * ========================================
+ */
 .grid-pattern {
-  background-image: linear-gradient(rgba(14, 165, 233, 0.05) 1px, transparent 1px),
+  background-image: 
+    linear-gradient(rgba(14, 165, 233, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(14, 165, 233, 0.05) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 
+.holographic {
+  background: linear-gradient(
+    120deg,
+    rgba(59, 130, 246, 0.15),
+    rgba(14, 165, 233, 0.15),
+    rgba(236, 72, 153, 0.12)
+  );
+  background-size: 200% 200%;
+  animation: holo-shift 6s ease-in-out infinite;
+}
+
+/**
+ * ========================================
+ * ANIMATIONS
+ * ========================================
+ */
 @keyframes grid-move {
   0% {
     transform: translate(0, 0);
@@ -76,15 +301,8 @@ body {
   }
 }
 
-.holographic {
-  background: linear-gradient(120deg, rgba(59, 130, 246, 0.15), rgba(14, 165, 233, 0.15), rgba(236, 72, 153, 0.12));
-  background-size: 200% 200%;
-  animation: holo-shift 6s ease-in-out infinite;
-}
-
 @keyframes holo-shift {
-  0%,
-  100% {
+  0%, 100% {
     background-position: 0% 50%;
   }
   50% {
@@ -92,12 +310,74 @@ body {
   }
 }
 
-.particles {
-  position: relative;
-  overflow: hidden;
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
-.particles::before {
+/**
+ * ========================================
+ * CUSTOM UTILITIES
+ * ========================================
+ */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/**
+ * ========================================
+ * COMPONENT LAYER UTILITIES
+ * ========================================
+ */
+@layer components {
+  /* Card with Healthcare shadow */
+  .card-healthcare {
+    @apply rounded-xl bg-card p-6 shadow-card border border-card-border;
+  }
+  
+  .card-healthcare:hover {
+    @apply shadow-card-hover;
+  }
+  
+  /* Vital sign badge */
+  .vital-badge {
+    @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium;
+  }
+  
+  .vital-badge-normal {
+    @apply bg-success-light text-success;
+  }
+  
+  .vital-badge-elevated {
+    @apply bg-warning-light text-warning;
+  }
+  
+  .vital-badge-critical {
+    @apply bg-error-light text-error;
+  }
+}
+
+/* Particle Float Animation */
+.particle-float::after {
   content: "";
   position: absolute;
   inset: 0;

@@ -54,7 +54,7 @@ export function Spo2Gauge({ live = true, value: externalValue, height = 256, sho
         <ResponsiveContainer width="100%" height="100%">
           <RadialBarChart innerRadius="70%" outerRadius="100%" barSize={20} data={data} startAngle={180} endAngle={0}>
             <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
-            <RadialBar background clockWise dataKey="value" fill={getStatusColor(value)} cornerRadius={10} />
+            <RadialBar background dataKey="value" fill={getStatusColor(value)} cornerRadius={10} />
             <text x="50%" y="50%" textAnchor="middle" fontSize={36} fontWeight="bold" fill="currentColor">
               {value.toFixed(1)}%
             </text>

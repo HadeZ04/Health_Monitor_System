@@ -97,7 +97,7 @@ export default function EmergencyPage() {
           <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <p className="text-sm font-semibold">🔴 Critical: Heart Rate > 150 bpm</p>
+                <p className="text-sm font-semibold">🔴 Critical: Heart Rate {'>'} 150 bpm</p>
                 <p className="text-xs text-muted-foreground">Immediate alert via all channels</p>
               </div>
               <Badge variant="destructive">Critical</Badge>
@@ -125,7 +125,7 @@ export default function EmergencyPage() {
           <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <p className="text-sm font-semibold">🔴 Critical: Heart Rate < 40 bpm</p>
+                <p className="text-sm font-semibold">🔴 Critical: Heart Rate {'<'} 40 bpm</p>
                 <p className="text-xs text-muted-foreground">Bradycardia detection</p>
               </div>
               <Badge variant="destructive">Critical</Badge>
@@ -152,7 +152,7 @@ export default function EmergencyPage() {
           <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <p className="text-sm font-semibold">🔴 Critical: SpO2 < 88%</p>
+                <p className="text-sm font-semibold">🔴 Critical: SpO2 {'<'} 88%</p>
                 <p className="text-xs text-muted-foreground">Severe hypoxemia alert</p>
               </div>
               <Badge variant="destructive">Critical</Badge>

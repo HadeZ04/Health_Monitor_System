@@ -1,7 +1,7 @@
-﻿import { Router } from "express";
-import { getMe } from "../controllers/userController";
-import { jwtMiddleware } from "../middleware/auth";
+import { Router } from 'express';
+import { authController } from '../controllers/authController.js';
+import { authenticate } from '../middlewares/authMiddleware.js';
 
 export const userRouter = Router();
 
-userRouter.get("/me", jwtMiddleware, getMe);
+userRouter.get('/me', authenticate, authController.getMe);

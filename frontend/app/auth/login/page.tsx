@@ -20,10 +20,25 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      const session = await apiFetch<SessionState>("/auth/login", {
+      const data = await apiFetch<{
+        user: { id: string; email: string; name: string | null; role: { name: string } | null };
+        accessToken: string;
+        refreshToken: string;
+      }>("/auth/login", {
         method: "POST",
         body: JSON.stringify({ email, password })
       });
+
+      const session: SessionState = {
+        token: data.accessToken,
+        user: {
+          id: data.user.id,
+          email: data.user.email,
+          fullName: data.user.name ?? data.user.email,
+          role: data.user.role?.name ?? "patient",
+        },
+      };
+
       saveSession(session);
       router.push("/dashboard");
     } catch (err) {
