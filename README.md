@@ -12,12 +12,6 @@
 
 ## 🌟 Features
 
-### 🤖 **Secure Medical Chatbot** (NEW!)
-- **6 Intent Types:** Personal data query, real-time analysis, general QA, admin tools, follow-up, out-of-scope
-- **7 Security Layers:** Input validation, safety gate, auth, PII sanitization, DB security, output validation, audit logging
-- **PII Protection:** Automatic detection & removal of 7 PII/PHI types (names, phones, IDs, addresses...)
-- **Emergency Detection:** 50+ emergency keywords with immediate safety response
-- **Medical Compliance:** HIPAA-ready audit trails, consent management, data minimization
 
 ### 📊 **Health Monitoring Platform**
 - Real-time vital signs monitoring (ECG, SpO2, HR)
@@ -25,14 +19,6 @@
 - Alert system with configurable rules
 - Analytics dashboard with trends
 - Doctor-patient communication
-
-### 🔐 **Enterprise Security**
-- JWT authentication with role-based access control
-- Multi-layer PII/PHI protection
-- Prompt injection prevention
-- Comprehensive audit logging
-- GDPR-compliant data retention
-
 ---
 
 ## 🏗️ Architecture
