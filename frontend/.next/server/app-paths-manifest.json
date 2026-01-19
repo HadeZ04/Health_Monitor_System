@@ -1,0 +1,8 @@
+{
+  "/test-ui/page": "app/test-ui/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/admin/doctors/page": "app/admin/doctors/page.js",
+  "/admin/users/page": "app/admin/users/page.js",
+  "/admin/patients/page": "app/admin/patients/page.js",
+  "/dashboard/page": "app/dashboard/page.js"
+}
