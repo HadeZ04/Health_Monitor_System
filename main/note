@@ -1,0 +1,662 @@
+// #define APP_TEST_MAX30102 1
+
+// #if APP_TEST_MAX30102
+
+// #include <stdio.h>
+
+// #include "driver_max30102_interface.h"
+// #include "esp_log.h"
+// #include "freertos/FreeRTOS.h"
+// #include "freertos/task.h"
+
+// namespace {
+// static const char *TAG = "MAX3010X_TEST";
+// constexpr uint8_t MAX3010X_ADDR = 0x57;  // 7-bit I2C address (MAX30100/MAX30102 breakout boards)
+
+// constexpr uint8_t REG_PART_ID = 0xFF;
+// constexpr uint8_t REG_REV_ID = 0xFE;
+
+// bool write_u8(uint8_t reg, uint8_t value) {
+//   return max30102_interface_iic_write(MAX3010X_ADDR, reg, &value, 1) == 0;
+// }
+
+// bool read_u8(uint8_t reg, uint8_t &value) {
+//   return max30102_interface_iic_read(MAX3010X_ADDR, reg, &value, 1) == 0;
+// }
+
+// bool read_bytes(uint8_t reg, uint8_t *buf, uint16_t len) {
+//   return max30102_interface_iic_read(MAX3010X_ADDR, reg, buf, len) == 0;
+// }
+
+// // ---------------- MAX30102 ----------------
+// constexpr uint8_t MAX30102_REG_INTR_STATUS_1 = 0x00;
+// constexpr uint8_t MAX30102_REG_INTR_STATUS_2 = 0x01;
+// constexpr uint8_t MAX30102_REG_INTR_ENABLE_1 = 0x02;
+// constexpr uint8_t MAX30102_REG_INTR_ENABLE_2 = 0x03;
+// constexpr uint8_t MAX30102_REG_FIFO_WR_PTR = 0x04;
+// constexpr uint8_t MAX30102_REG_OVF_COUNTER = 0x05;
+// constexpr uint8_t MAX30102_REG_FIFO_RD_PTR = 0x06;
+// constexpr uint8_t MAX30102_REG_FIFO_DATA = 0x07;
+// constexpr uint8_t MAX30102_REG_FIFO_CONFIG = 0x08;
+// constexpr uint8_t MAX30102_REG_MODE_CONFIG = 0x09;
+// constexpr uint8_t MAX30102_REG_SPO2_CONFIG = 0x0A;
+// constexpr uint8_t MAX30102_REG_LED1_PA = 0x0C;  // Red
+// constexpr uint8_t MAX30102_REG_LED2_PA = 0x0D;  // IR
+
+// bool max30102_reset() {
+//   if (!write_u8(MAX30102_REG_MODE_CONFIG, 0x40)) {
+//     ESP_LOGE(TAG, "MAX30102 reset: write MODE_CONFIG failed");
+//     return false;
+//   }
+//   for (int i = 0; i < 50; ++i) {
+//     uint8_t mode = 0;
+//     if (!read_u8(MAX30102_REG_MODE_CONFIG, mode)) {
+//       ESP_LOGE(TAG, "MAX30102 reset: read MODE_CONFIG failed");
+//       return false;
+//     }
+//     if ((mode & 0x40) == 0) return true;
+//     vTaskDelay(pdMS_TO_TICKS(10));
+//   }
+//   ESP_LOGE(TAG, "MAX30102 reset timeout (MODE_CONFIG bit6 didn't clear)");
+//   return false;
+// }
+
+// bool max30102_configure_spo2_mode() {
+//   if (!max30102_reset()) return false;
+
+//   // Clear interrupts + FIFO pointers
+//   uint8_t tmp = 0;
+//   read_u8(MAX30102_REG_INTR_STATUS_1, tmp);
+//   read_u8(MAX30102_REG_INTR_STATUS_2, tmp);
+//   if (!write_u8(MAX30102_REG_FIFO_WR_PTR, 0x00)) return false;
+//   if (!write_u8(MAX30102_REG_OVF_COUNTER, 0x00)) return false;
+//   if (!write_u8(MAX30102_REG_FIFO_RD_PTR, 0x00)) return false;
+
+//   // FIFO: sample avg = 4, FIFO rollover = 1, almost full = 0
+//   if (!write_u8(MAX30102_REG_FIFO_CONFIG, 0x50)) return false;
+
+//   // SpO2 config: ADC range=4096nA, sample rate=100Hz, pulse width=411us (18-bit)
+//   if (!write_u8(MAX30102_REG_SPO2_CONFIG, 0x27)) return false;
+
+//   // LED currents (tune for your module): 0x24 ~ 7mA
+//   if (!write_u8(MAX30102_REG_LED1_PA, 0x24)) return false;
+//   if (!write_u8(MAX30102_REG_LED2_PA, 0x24)) return false;
+
+//   // Enable SpO2 mode
+//   if (!write_u8(MAX30102_REG_MODE_CONFIG, 0x03)) return false;
+
+//   // Enable interrupts: A_FULL + PPG_RDY
+//   if (!write_u8(MAX30102_REG_INTR_ENABLE_1, 0x80 | 0x40)) return false;
+//   if (!write_u8(MAX30102_REG_INTR_ENABLE_2, 0x00)) return false;
+
+//   return true;
+// }
+
+// // ---------------- MAX30100 ----------------
+// constexpr uint8_t MAX30100_REG_INTERRUPT_STATUS = 0x00;
+// constexpr uint8_t MAX30100_REG_INTERRUPT_ENABLE = 0x01;
+// constexpr uint8_t MAX30100_REG_FIFO_WR_PTR = 0x02;
+// constexpr uint8_t MAX30100_REG_OVF_COUNTER = 0x03;
+// constexpr uint8_t MAX30100_REG_FIFO_RD_PTR = 0x04;
+// constexpr uint8_t MAX30100_REG_FIFO_DATA = 0x05;
+// constexpr uint8_t MAX30100_REG_MODE_CONFIG = 0x06;
+// constexpr uint8_t MAX30100_REG_SPO2_CONFIG = 0x07;
+// constexpr uint8_t MAX30100_REG_LED_IR = 0x09;
+// constexpr uint8_t MAX30100_REG_LED_RED = 0x0A;
+
+// bool max30100_configure_hr_spo2_mode() {
+//   // Reset/stop (MAX30100 doesn't have the same reset bit as MAX30102)
+//   if (!write_u8(MAX30100_REG_MODE_CONFIG, 0x00)) return false;
+//   vTaskDelay(pdMS_TO_TICKS(10));
+
+//   // Clear FIFO pointers
+//   if (!write_u8(MAX30100_REG_FIFO_WR_PTR, 0x00)) return false;
+//   if (!write_u8(MAX30100_REG_OVF_COUNTER, 0x00)) return false;
+//   if (!write_u8(MAX30100_REG_FIFO_RD_PTR, 0x00)) return false;
+
+//   // SpO2 config: hi-res, 100Hz, 1600us pulse width (same as `main/sensors.cpp`)
+//   if (!write_u8(MAX30100_REG_SPO2_CONFIG, 0x47)) return false;
+
+//   // LED currents (tune for your module): ~24mA
+//   if (!write_u8(MAX30100_REG_LED_IR, 0x66)) return false;
+//   if (!write_u8(MAX30100_REG_LED_RED, 0x66)) return false;
+
+//   // Mode: HR + SpO2
+//   if (!write_u8(MAX30100_REG_MODE_CONFIG, 0x03)) return false;
+
+//   // Interrupts (optional): enable FIFO full / data ready
+//   (void)write_u8(MAX30100_REG_INTERRUPT_ENABLE, 0x00);
+
+//   // Clear latched interrupts
+//   uint8_t tmp = 0;
+//   (void)read_u8(MAX30100_REG_INTERRUPT_STATUS, tmp);
+
+//   return true;
+// }
+
+// }  // namespace
+
+// extern "C" void app_main(void) {
+//   ESP_LOGI(TAG, "ECG paused. Start MAX3010x test...");
+
+//   if (max30102_interface_iic_init() != 0) {
+//     ESP_LOGE(TAG, "I2C init failed (check SDA/SCL/port config in max30102 interface)");
+//     return;
+//   }
+
+//   uint8_t part = 0, rev = 0;
+//   if (!read_u8(REG_PART_ID, part) || !read_u8(REG_REV_ID, rev)) {
+//     ESP_LOGE(TAG, "Read PART/REV failed. Check wiring + address (0x%02X)", MAX3010X_ADDR);
+//     return;
+//   }
+//   ESP_LOGI(TAG, "PART=0x%02X REV=0x%02X", part, rev);
+
+//   enum class Chip { Max30102, Max30100, Unknown };
+//   Chip chip = Chip::Unknown;
+//   if (part == 0x15) chip = Chip::Max30102;
+//   if (part == 0x11) chip = Chip::Max30100;
+
+//   if (chip == Chip::Unknown) {
+//     ESP_LOGW(TAG, "Unknown PART ID 0x%02X. Will try MAX30102 register map first.", part);
+//     chip = Chip::Max30102;
+//   }
+
+//   if (chip == Chip::Max30102) {
+//     ESP_LOGI(TAG, "Detected MAX30102-like (PART=0x15).");
+//     if (!max30102_configure_spo2_mode()) {
+//       ESP_LOGE(TAG, "MAX30102 configure failed");
+//       return;
+//     }
+//   } else {
+//     ESP_LOGI(TAG, "Detected MAX30100-like (PART=0x11).");
+//     if (!max30100_configure_hr_spo2_mode()) {
+//       ESP_LOGE(TAG, "MAX30100 configure failed");
+//       return;
+//     }
+//   }
+
+//   ESP_LOGI(TAG, "Configured. Reading FIFO...");
+
+//   int sample_no = 0;
+//   while (true) {
+//     uint8_t wr = 0, rd = 0;
+//     if (chip == Chip::Max30102) {
+//       if (!read_u8(MAX30102_REG_FIFO_WR_PTR, wr) || !read_u8(MAX30102_REG_FIFO_RD_PTR, rd)) {
+//         ESP_LOGW(TAG, "FIFO ptr read failed");
+//         vTaskDelay(pdMS_TO_TICKS(200));
+//         continue;
+//       }
+//     } else {
+//       if (!read_u8(MAX30100_REG_FIFO_WR_PTR, wr) || !read_u8(MAX30100_REG_FIFO_RD_PTR, rd)) {
+//         ESP_LOGW(TAG, "FIFO ptr read failed");
+//         vTaskDelay(pdMS_TO_TICKS(200));
+//         continue;
+//       }
+//     }
+
+//     int available = (wr - rd) & 0x1F;
+//     if (available == 0) {
+//       vTaskDelay(pdMS_TO_TICKS(20));
+//       continue;
+//     }
+
+//     if (chip == Chip::Max30102) {
+//       while (available-- > 0) {
+//         uint8_t raw[6];
+//         if (!read_bytes(MAX30102_REG_FIFO_DATA, raw, sizeof(raw))) {
+//           ESP_LOGW(TAG, "FIFO read failed");
+//           break;
+//         }
+//         uint32_t red = ((uint32_t)raw[0] << 16) | ((uint32_t)raw[1] << 8) | raw[2];
+//         uint32_t ir = ((uint32_t)raw[3] << 16) | ((uint32_t)raw[4] << 8) | raw[5];
+//         red &= 0x3FFFF;
+//         ir &= 0x3FFFF;
+
+//         printf("IR:%lu RED:%lu\n", (unsigned long)ir, (unsigned long)red);
+
+//         if ((++sample_no % 25) == 0) {
+//           ESP_LOGI(TAG, "Samples ok (%d)", sample_no);
+//         }
+//       }
+//     } else {
+//       while (available-- > 0) {
+//         uint8_t raw[4];
+//         if (!read_bytes(MAX30100_REG_FIFO_DATA, raw, sizeof(raw))) {
+//           ESP_LOGW(TAG, "FIFO read failed");
+//           break;
+//         }
+//         uint32_t ir = ((uint32_t)raw[0] << 8) | raw[1];
+//         uint32_t red = ((uint32_t)raw[2] << 8) | raw[3];
+
+//         printf("IR:%lu RED:%lu\n", (unsigned long)ir, (unsigned long)red);
+
+//         if ((++sample_no % 25) == 0) {
+//           ESP_LOGI(TAG, "Samples ok (%d)", sample_no);
+//         }
+//       }
+//     }
+
+//     vTaskDelay(pdMS_TO_TICKS(10));
+//   }
+// }
+
+// #else  // APP_TEST_MAX30102
+
+// // ECG test (kept for later; set APP_TEST_MAX30102=0 to enable)
+
+// #include <errno.h>
+// #include <stdio.h>
+// #include <string.h>
+
+// #include "esp_adc/adc_oneshot.h"
+// #include "esp_event.h"
+// #include "esp_log.h"
+// #include "esp_netif.h"
+// #include "esp_wifi.h"
+// #include "freertos/FreeRTOS.h"
+// #include "freertos/event_groups.h"
+// #include "freertos/task.h"
+// #include "lwip/inet.h"
+// #include "lwip/sockets.h"
+// #include "nvs_flash.h"
+
+// #define ADC_UNIT ADC_UNIT_1
+// #define ADC_CHAN ADC_CHANNEL_3      // GPIO 4 on ESP32-S3
+// #define ADC_ATTEN ADC_ATTEN_DB_12   // Up to ~3.3V
+
+// #define WIFI_SSID "TrungThang"
+// #define WIFI_PASS "phamtrungthang239"
+// #define RASPBERRY_HOST "192.168.1.50"  // Đổi IP này thành IP máy chạy Teleplot
+// #define RASPBERRY_PORT 47269           // Port mặc định của Teleplot
+
+// static const char *TAG = "ECG_TEST";
+// static EventGroupHandle_t s_wifi_event_group;
+// static const int WIFI_CONNECTED_BIT = BIT0;
+
+// static void wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data) {
+//   if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
+//     esp_wifi_connect();
+//   } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
+//     esp_wifi_connect();
+//     xEventGroupClearBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+//     ESP_LOGW(TAG, "Wi-Fi disconnected, reconnecting...");
+//   } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
+//     xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+//     ESP_LOGI(TAG, "Wi-Fi connected");
+//   }
+// }
+
+// static void init_nvs() {
+//   esp_err_t ret = nvs_flash_init();
+//   if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+//     ESP_ERROR_CHECK(nvs_flash_erase());
+//     ret = nvs_flash_init();
+//   }
+//   ESP_ERROR_CHECK(ret);
+// }
+
+// static void wifi_init_sta() {
+//   s_wifi_event_group = xEventGroupCreate();
+//   ESP_ERROR_CHECK(esp_netif_init());
+//   ESP_ERROR_CHECK(esp_event_loop_create_default());
+//   esp_netif_create_default_wifi_sta();
+
+//   wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+//   ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+
+//   ESP_ERROR_CHECK(
+//       esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_event_handler, nullptr, nullptr));
+//   ESP_ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &wifi_event_handler, nullptr,
+//                                                       nullptr));
+
+//   wifi_config_t wifi_config = {};
+//   strncpy(reinterpret_cast<char *>(wifi_config.sta.ssid), WIFI_SSID, sizeof(wifi_config.sta.ssid) - 1);
+//   strncpy(reinterpret_cast<char *>(wifi_config.sta.password), WIFI_PASS, sizeof(wifi_config.sta.password) - 1);
+//   wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
+//   wifi_config.sta.sae_pwe_h2e = WPA3_SAE_PWE_BOTH;
+
+//   ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+//   ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
+//   ESP_ERROR_CHECK(esp_wifi_start());
+
+//   ESP_LOGI(TAG, "Connecting to Wi-Fi SSID \"%s\"", WIFI_SSID);
+//   EventBits_t bits =
+//       xEventGroupWaitBits(s_wifi_event_group, WIFI_CONNECTED_BIT, pdFALSE, pdFALSE, pdMS_TO_TICKS(10000));
+//   if ((bits & WIFI_CONNECTED_BIT) == 0) {
+//     ESP_LOGE(TAG, "Wi-Fi connect timeout");
+//   }
+// }
+
+// static int create_udp_socket(struct sockaddr_in &dest_addr) {
+//   dest_addr.sin_addr.s_addr = inet_addr(RASPBERRY_HOST);
+//   dest_addr.sin_family = AF_INET;
+//   dest_addr.sin_port = htons(RASPBERRY_PORT);
+
+//   int sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP);
+//   if (sock < 0) {
+//     ESP_LOGE(TAG, "Unable to create UDP socket: errno %d", errno);
+//     return -1;
+//   }
+
+//   ESP_LOGI(TAG, "UDP target %s:%d ready", RASPBERRY_HOST, RASPBERRY_PORT);
+//   return sock;
+// }
+
+// extern "C" void app_main(void) {
+//   init_nvs();
+//   wifi_init_sta();
+
+//   struct sockaddr_in dest_addr = {};
+//   int udp_sock = create_udp_socket(dest_addr);
+
+//   adc_oneshot_unit_handle_t adc1_handle;
+//   adc_oneshot_unit_init_cfg_t init_config1 = {
+//       .unit_id = ADC_UNIT,
+//       .clk_src = ADC_RTC_CLK_SRC_DEFAULT,
+//       .ulp_mode = ADC_ULP_MODE_DISABLE,
+//   };
+//   ESP_ERROR_CHECK(adc_oneshot_new_unit(&init_config1, &adc1_handle));
+
+//   adc_oneshot_chan_cfg_t config = {
+//       .atten = ADC_ATTEN,
+//       .bitwidth = ADC_BITWIDTH_DEFAULT,
+//   };
+//   ESP_ERROR_CHECK(adc_oneshot_config_channel(adc1_handle, ADC_CHAN, &config));
+
+//   ESP_LOGI(TAG, "ADC ready, start sampling ECG...");
+//   ESP_LOGI(TAG, "Serial plotter shows the waveform; UDP stream is sent to Raspberry Pi.");
+
+//   static float ema = 0.0f;
+//   bool ema_init = false;
+//   char udp_buf[64];
+
+//   while (true) {
+//     const int samples = 8;
+//     int vals[samples];
+//     for (int i = 0; i < samples; ++i) {
+//       int v = 0;
+//       ESP_ERROR_CHECK(adc_oneshot_read(adc1_handle, ADC_CHAN, &v));
+//       vals[i] = v;
+//     }
+
+//     for (int i = 1; i < samples; ++i) {
+//       int key = vals[i];
+//       int j = i - 1;
+//       while (j >= 0 && vals[j] > key) {
+//         vals[j + 1] = vals[j];
+//         --j;
+//       }
+//       vals[j + 1] = key;
+//     }
+//     int median = vals[samples / 2];
+//     int trimmed_sum = 0;
+//     for (int i = 1; i < samples - 1; ++i) trimmed_sum += vals[i];
+//     int trimmed_avg = trimmed_sum / (samples - 2);
+//     int filtered = (median + trimmed_avg) / 2;
+
+//     if (!ema_init) {
+//       ema = static_cast<float>(filtered);
+//       ema_init = true;
+//     } else {
+//       ema = 0.85f * ema + 0.15f * static_cast<float>(filtered);
+//     }
+
+//     printf("ECG:%d RAW:%d EMA:%d\n", filtered, median, static_cast<int>(ema));
+
+//     // Gửi UDP cho Teleplot: mỗi dòng key:value\n
+//     if (udp_sock >= 0) {
+//       int len = snprintf(udp_buf, sizeof(udp_buf), "ECG:%d\nRAW:%d\nEMA:%d\n",
+//                          filtered, median, static_cast<int>(ema));
+//       if (len > 0) {
+//         int err = sendto(udp_sock, udp_buf, len, 0,
+//                          reinterpret_cast<struct sockaddr *>(&dest_addr), sizeof(dest_addr));
+//         if (err < 0) {
+//           ESP_LOGW(TAG, "UDP send failed: errno %d", errno);
+//         }
+//       }
+//     }
+
+//     // Chậm lại một chút cho dễ quan sát trên Serial Plotter.
+//     vTaskDelay(pdMS_TO_TICKS(20));
+//   }
+// }
+/*
+ * HealthMonitor - app_main.cpp
+ *
+ * ECG path is active above. The MAX3010x/DFRobot PPG path below is currently
+ * disabled; remove the #if 0 guard to re-enable it.
+ */
+
+// MAX3010x/DFRobot PPG path (disabled)
+#if 0
+
+#include <stdio.h>
+#include <math.h>
+#include <array>
+
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "esp_err.h"
+#include "esp_log.h"
+#include "esp_timer.h"
+
+#include "DFRobot_BloodOxygen_S.h"
+#include "ble_health.h"
+#include "max3010x_ppg.h"
+#include "ppg_fft_hr.h"
+
+static const char *TAG = "APP_MAIN";
+
+namespace {
+struct OutlierFilter {
+  static constexpr int kHistSize = 10;
+  static constexpr int kSmoothSize = 5;
+
+  std::array<int, kHistSize> hist{};
+  int hist_head = 0;
+  int hist_count = 0;
+
+  std::array<int, kSmoothSize> smooth{};
+  int smooth_head = 0;
+  int smooth_count = 0;
+
+  int last = -1;
+
+  void reset() {
+    hist_head = 0;
+    hist_count = 0;
+    smooth_head = 0;
+    smooth_count = 0;
+    last = -1;
+  }
+
+  static void meanStd(const int* x, int n, float* mean_out, float* std_out) {
+    if (mean_out) *mean_out = 0.0f;
+    if (std_out) *std_out = 0.0f;
+    if (x == nullptr || n <= 1) return;
+
+    double sum = 0.0;
+    for (int i = 0; i < n; ++i) sum += x[i];
+    const float mean = (float)(sum / (double)n);
+
+    double var = 0.0;
+    for (int i = 0; i < n; ++i) {
+      const double d = (double)x[i] - (double)mean;
+      var += d * d;
+    }
+    var /= (double)n;
+
+    if (mean_out) *mean_out = mean;
+    if (std_out) *std_out = (float)sqrt(var);
+  }
+
+  int update(int new_val) {
+    if (new_val <= 0) return -1;
+
+    // Outlier rejection based on last 10 accepted values.
+    if (hist_count >= 3) {
+      int tmp[kHistSize];
+      const int n = hist_count;
+      const int start = (hist_head - n + kHistSize) % kHistSize;
+      for (int i = 0; i < n; ++i) tmp[i] = hist[(start + i) % kHistSize];
+
+      float mean = 0.0f, std = 0.0f;
+      meanStd(tmp, n, &mean, &std);
+      const float diff = fabsf((float)new_val - mean);
+      const float thresh = fmaxf(15.0f, 3.0f * std);
+      if (diff > thresh) return last;
+    }
+
+    // Reject sudden jumps.
+    if (last > 0) {
+      const int d = new_val - last;
+      const int ad = d < 0 ? -d : d;
+      if (ad > 35) return last;
+    }
+
+    // Accept + smooth.
+    hist[hist_head] = new_val;
+    hist_head = (hist_head + 1) % kHistSize;
+    if (hist_count < kHistSize) hist_count++;
+
+    smooth[smooth_head] = new_val;
+    smooth_head = (smooth_head + 1) % kSmoothSize;
+    if (smooth_count < kSmoothSize) smooth_count++;
+
+    long sum = 0;
+    for (int i = 0; i < smooth_count; ++i) sum += smooth[i];
+    last = (smooth_count > 0) ? (int)(sum / smooth_count) : -1;
+    return last;
+  }
+};
+}  // namespace
+
+extern "C" void app_main(void)
+{
+    ble_health_init();
+
+    uint32_t seq = 0;
+    uint32_t last_report_time = 0;
+
+    // Prefer raw PPG (MAX3010x) + FFT. Fallback: DFRobot BloodOxygen module.
+    Max3010xPpg max;
+    PpgFftHrProcessor ppg;
+    const bool max_ok = max.begin(&Wire, 0x57) && ppg.init();
+
+    DFRobot_BloodOxygen_S_I2C df(&Wire, 0x57);
+    bool df_ok = false;
+    OutlierFilter hr_f;
+    OutlierFilter spo2_f;
+
+    if (max_ok) {
+        ESP_LOGI(TAG, "Using MAX3010x raw PPG + FFT (fs=%dHz, fft=%d)", PpgFftHrProcessor::kSampleRateHz,
+                 PpgFftHrProcessor::kFftSize);
+        ppg.reset();
+    } else {
+        ESP_LOGW(TAG, "MAX3010x not detected; using DFRobot BloodOxygen module");
+
+        int retry = 0;
+        while (!df.begin() && retry < 5) {
+            ESP_LOGE(TAG, "Sensor init failed, retrying...");
+            vTaskDelay(pdMS_TO_TICKS(500));
+            retry++;
+        }
+        if (retry == 5) {
+            ESP_LOGE(TAG, "GIVE UP: Check Wiring!");
+            return;
+        }
+
+        ESP_LOGI(TAG, "Sensor Start Collecting...");
+        df.sensorStartCollect();
+        df_ok = true;
+        hr_f.reset();
+        spo2_f.reset();
+    }
+
+    while (true)
+    {
+        const uint32_t now = (uint32_t)(esp_timer_get_time() / 1000ULL);
+
+        if (max_ok) {
+            Max3010xSample samples[10];
+            const int n = max.readFifo(samples, (int)(sizeof(samples) / sizeof(samples[0])));
+            if (n > 0) {
+                for (int i = 0; i < n; ++i) {
+                    ppg.push(samples[i].ir, samples[i].red);
+                }
+            } else if (n < 0) {
+                static uint32_t last_err = 0;
+                if (now - last_err > 2000) {
+                    ESP_LOGW(TAG, "MAX3010x FIFO read failed (I2C)");
+                    last_err = now;
+                }
+            }
+        } else if (df_ok) {
+            df.getHeartbeatSPO2();
+        }
+
+        if (now - last_report_time >= 1000)
+        {
+            last_report_time = now;
+
+            int16_t final_hr = -1;
+            int16_t final_spo2 = -1;
+            int16_t temp_x100 = 0;
+            uint8_t flags = 0;
+
+            if (max_ok) {
+                PpgEstimates est;
+                (void)ppg.estimate(now, &est);
+                if (est.bpm > 0.0f) {
+                    final_hr = (int16_t)lroundf(est.bpm);
+                    flags |= 0x01;
+                }
+                if (est.spo2 > 0.0f) {
+                    final_spo2 = (int16_t)lroundf(est.spo2);
+                    flags |= 0x02;
+                }
+            } else if (df_ok) {
+                const int raw_hr = df._sHeartbeatSPO2.Heartbeat;
+                const int raw_spo2 = df._sHeartbeatSPO2.SPO2;
+                const float temp_c = df.getTemperature_C();
+
+                temp_x100 = (int16_t)lroundf(temp_c * 100.0f);
+                flags |= 0x04;
+
+                if (raw_hr > 30 && raw_hr < 220) {
+                    const int v = hr_f.update(raw_hr);
+                    if (v > 0) {
+                        final_hr = (int16_t)v;
+                        flags |= 0x01;
+                    }
+                } else if (raw_hr <= 0) {
+                    hr_f.reset();
+                }
+
+                if (raw_spo2 > 50 && raw_spo2 <= 100) {
+                    const int v = spo2_f.update(raw_spo2);
+                    if (v > 0) {
+                        final_spo2 = (int16_t)v;
+                        flags |= 0x02;
+                    }
+                } else if (raw_spo2 <= 0) {
+                    spo2_f.reset();
+                }
+            }
+
+            ble_health_packet_t pkt = {
+                .seq = ++seq,
+                .uptime_ms = now,
+                .heart_rate_bpm = final_hr,
+                .spo2_percent = final_spo2,
+                .temperature_c_x100 = temp_x100,
+                .flags = flags,
+            };
+            (void)ble_health_notify(&pkt);
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+}
+
+#endif  // MAX3010x/DFRobot PPG path

@@ -1,0 +1,9 @@
+idf_component_register(
+    SRCS
+        "src/DFRobot_BloodOxygen_S.cpp"
+        "src/dfrobot_wire.cpp"
+    INCLUDE_DIRS
+        "include"
+    REQUIRES
+        driver
+)
