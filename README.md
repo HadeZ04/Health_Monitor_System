@@ -105,54 +105,10 @@ Health_Monitor_System/
 │   ├── test_integration.sh/.ps1              # Integration tests
 │   └── test-api.sh/.ps1                      # API tests
 └── docs/                                      # Documentation
-    ├── ARCHITECTURE.md                       # System design
-    ├── CHATBOT_SECURE_SETUP.md              # Setup guide
-    ├── FRONTEND_INTEGRATION.md              # FE-BE integration
-    ├── TEST_CHATBOT_SCENARIOS.md            # Test scenarios
-    ├── QUICK_REFERENCE.md                   # Quick reference
-    └── IMPLEMENTATION_SUMMARY.md             # What was built
-```
+
 
 ---
 
-## 🧪 Example Conversations
-
-### Emergency Detection
-```
-👤 User: "Tôi đau ngực dữ dội và khó thở"
-
-🤖 Bot: 
-🚨 CẢNH BÁO KHẨN CẤP 🚨
-
-⚠️ Triệu chứng của bạn có thể nghiêm trọng.
-Vui lòng GỌI NGAY 115 hoặc đến cơ sở y tế gần nhất.
-Đừng trì hoãn!
-
-📞 GỌI NGAY: 115
-```
-
-### PII Protection
-```
-👤 User: "Tôi tên Nguyễn Văn A, SĐT 0901234567, đường huyết cao"
-
-🔒 System: 
-- Detected PII: PATIENT_NAME, PHONE_NUMBER
-- Sanitized: "Tôi tên [TÊN_BỆNH_NHÂN], SĐT [SỐ_ĐIỆN_THOẠI], đường huyết cao"
-- Sent to Gemini: Clean version only
-
-🤖 Bot: "Đường huyết cao cần được theo dõi và điều trị..."
-```
-
-### Real-time Analysis
-```
-👤 User: "Tôi vừa đo huyết áp 150/95, có cao không?"
-
-🤖 Bot: "Huyết áp 150/95 mmHg cao hơn mức bình thường (120/80).
-Đây là huyết áp ở mức Cao huyết áp Giai đoạn 1...
-💡 Khuyến nghị: Gặp bác sĩ để đánh giá và tư vấn điều trị."
-```
-
----
 
 
 [Documentation](docs/QUICK_REFERENCE.md) • [Architecture](docs/ARCHITECTURE.md) • [Setup Guide](docs/CHATBOT_SECURE_SETUP.md) • [Tests](docs/TEST_CHATBOT_SCENARIOS.md)
