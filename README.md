@@ -16,6 +16,7 @@
 ### 📊 **Health Monitoring Platform**
 - Real-time vital signs monitoring (ECG, SpO2, HR)
 - Patient EHR management with medical history
+- Predicting abnormal heart rhythms
 - Alert system with configurable rules
 - Analytics dashboard with trends
 - Doctor-patient communication
@@ -23,64 +24,56 @@
 
 ## 🏗️ Architecture
 
-```
 ┌─────────────────────────────────────────────────────────┐
-│                     User Interface                      │
-│              (Next.js 14 + TailwindCSS)                │
-└─────────────────┬───────────────────────────────────────┘
-                  │ HTTPS/REST
-┌─────────────────▼───────────────────────────────────────┐
-│              Backend API (Express)                      │
-│  ┌────────────────────────────────────────────────┐    │
-│  │         Secure Chatbot Engine                  │    │
-│  │  • Qwen Router (Intent Classification)        │    │
-│  │  • PII Sanitization                           │    │
-│  │  • Safety Gate                                │    │
-│  │  • Gemini Integration                         │    │
-│  │  • Audit Logging                              │    │
-│  └────────────────────────────────────────────────┘    │
-└─────────────┬───────────────────┬─────────────────────┘
-              │                   │
-    ┌─────────▼─────────┐   ┌────▼──────────┐
-    │  PostgreSQL       │   │  Gemini API   │
-    │  (Patient Data)   │   │  (Google AI)  │
-    └───────────────────┘   └───────────────┘
-              │
-    ┌─────────▼─────────┐
-    │  Qwen 14B Local   │
-    │  (Classification) │
-    └───────────────────┘
-```
+│                   User Interface                        │
+│             (Next.js 14 + TailwindCSS)                  │
+│   • Live ECG Graph   • Health Alerts   • Chatbot UI     │
+└─────────────────▲─────────┬─────────────────────────────┘
+                  │         │ HTTPS/REST & WebSocket
+┌─────────────────▼─────────▼─────────────────────────────┐
+│              Backend System (Express + Python)          │
+│                                                         │
+│  ┌────────────────────────┐   ┌──────────────────────┐  │
+│  │  Secure Chatbot Engine │   │  ECG Analysis Engine │  │
+│  │ • Qwen Router          │   │ • Signal Pre-process │  │
+│  │ • PII Sanitization     │   │   (Noise Filtering)  │  │
+│  │ • Gemini Integration   │   │ • Anomaly Detection  │  │
+│  │ • Safety Gate          │   │   (AI/Arrhythmia)    │  │◄──┐
+│  └───────────┬────────────┘   └──────────┬───────────┘  │   │
+│              │                           │              │   │
+└──────────────┼───────────────────────────┼──────────────┘   │
+               │                           │                  │
+      ┌────────▼─────────┐        ┌────────▼─────────┐        │
+      │    PostgreSQL    │        │    Gemini API    │        │
+      │  (Patient Data   │        │   (Advisory &    │        │
+      │   & ECG Logs)    │        │    Report Gen)   │        │
+      └──────────────────┘        └──────────────────┘        │
+               │                                              │
+      ┌────────▼─────────┐                                    │
+      │  Qwen 14B Local  │                                    │
+      │ (Classification) │                                    │
+      └──────────────────┘                                    │
+                                                              │
+┌─────────────────────────────────────────────────────────┐   │
+│                   IoT Hardware Layer                    │   │
+│                                                         │   │
+│  ┌──────────────┐      ┌──────────────┐                 │   │
+│  │  Patient     │      │     MCU      │   MQTT / HTTP   │   │
+│  │ (Bio-Signal) ├───►  │ (ESP32/RPi)  ├─────────────────┼───┘
+│  └──────────────┘      │ + FW Logic   │                 │
+│         │              └──────┬───────┘                 │
+│         ▼                     │                         │
+│  ┌──────────────┐             │                         │
+│  │  ECG Sensor  │◄────────────┘                         │
+│  │ (AD8232/PPG) │                                       │
+│  └──────────────┘                                       │
+└─────────────────────────────────────────────────────────┘
 
-**See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed diagrams**
 
 ---
 
-## 🚀 Quick Start
-
-### Prerequisites
-
-- **Node.js** 20+ ([Download](https://nodejs.org/))
-- **Python** 3.10+ ([Download](https://www.python.org/))
-- **PostgreSQL** 16+ ([Download](https://www.postgresql.org/))
-- **Gemini API Key** ([Get Free Key](https://makersuite.google.com/app/apikey))
-
-### 1. Clone & Install
-
-```bash
-git clone https://github.com/HadeZ04/Health_Monitor_System.git
-cd Health_Monitor_System
-
-# Install backend dependencies
-cd backend
-npm install
-cd ..
-
-# Install Python dependencies (for Qwen router)
-pip install -r requirements.txt
-```
-
-### 2. Configure Environment
+## 🚀 Demo
+https://drive.google.com/drive/folders/1LgMZBo7TKpf__LVrDuDrsNUa-TZPPx6a?usp=sharing
 
 ```bash
 # Copy environment template
