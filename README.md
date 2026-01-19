@@ -22,8 +22,9 @@
 - Doctor-patient communication
 ---
 
-## 🏗️ Architecture
+## Architecture
 
+```text
 ┌─────────────────────────────────────────────────────────┐
 │                   User Interface                        │
 │             (Next.js 14 + TailwindCSS)                  │
@@ -68,9 +69,7 @@
 │  │ (AD8232/PPG) │                                       │
 │  └──────────────┘                                       │
 └─────────────────────────────────────────────────────────┘
-
-
----
+```
 
 ## 🚀 Demo
 https://drive.google.com/drive/folders/1LgMZBo7TKpf__LVrDuDrsNUa-TZPPx6a?usp=sharing
